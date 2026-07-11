@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>娄底华智科技有限公司 · SDE 本体论</title>
+<meta name="description" content="以 SDE（显露·差异·纠缠）本体论为内核的技术创新平台——教育、健康、商业、科研、智能体，同一套底盘，五个战场。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A16;
+    --ink-2:#101026;
+    --ink-3:#16163a;
+    --line:rgba(140,140,200,.14);
+    --line-soft:rgba(140,140,200,.08);
+    --text:#EAEAF4;
+    --muted:#9A9ABE;
+    --muted-2:#6E6E92;
+    --E:#6D5EF6;   /* 纠缠 Entanglement — violet */
+    --D:#FF5C8A;   /* 差异 Difference — magenta  */
+    --S:#2DE1C2;   /* 显露 Show — aqua/cyan      */
+    --glow:rgba(109,94,246,.25);
+    --font-display:"Sora",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    --font-body:"Inter",-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    --font-mono:"Space Mono","SFMono-Regular",Consolas,monospace;
+    --maxw:1180px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(45,225,194,.28);color:#fff}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,10,22,.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:700;letter-spacing:.02em}
+  .brand .mark{
+    width:26px;height:26px;flex:none;border-radius:7px;
+    background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E));
+    box-shadow:0 0 18px var(--glow);
+  }
+  .brand .zh{font-size:16px}
+  .brand .en{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:.18em;margin-left:2px}
+  .nav-links{display:flex;gap:6px}
+  .nav-links a{
+    font-size:13.5px;color:var(--muted);padding:8px 13px;border-radius:8px;transition:color .2s,background .2s;
+  }
+  .nav-links a:hover,.nav-links a:focus-visible{color:var(--text);background:var(--line-soft)}
+  .nav-toggle{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer}
+  @media(max-width:880px){
+    .nav-links{
+      position:absolute;top:66px;left:0;right:0;flex-direction:column;gap:2px;
+      background:rgba(12,12,28,.98);border-bottom:1px solid var(--line);padding:12px 18px 20px;
+      transform:translateY(-140%);transition:transform .3s ease;
+    }
+    .nav-links.open{transform:translateY(0)}
+    .nav-links a{padding:12px 10px;font-size:15px;border-radius:10px}
+    .nav-toggle{display:block}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden}
+  #net{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(10,10,22,.55) 100%),
+      linear-gradient(180deg,transparent 60%,var(--ink) 100%);
+  }
+  .hero-inner{position:relative;z-index:2;padding:96px 0 120px}
+  .eyebrow{
+    font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;color:var(--muted);
+    display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;
+    border:1px solid var(--line);border-radius:100px;padding:7px 15px;background:rgba(16,16,38,.5);
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--S);box-shadow:0 0 10px var(--S)}
+  .hero h1{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(38px,7vw,78px);line-height:1.04;letter-spacing:-.02em;
+    max-width:14ch;
+  }
+  .hero h1 .fade{color:var(--muted-2)}
+  .hero h1 .gen{
+    background:linear-gradient(100deg,var(--S),var(--E) 60%,var(--D));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    position:relative;
+  }
+  .hero .lede{
+    margin-top:28px;max-width:52ch;font-size:clamp(15px,1.7vw,18.5px);color:var(--muted);line-height:1.75;
+  }
+  .hero .lede b{color:var(--text);font-weight:600}
+  .formula{
+    margin-top:34px;display:inline-flex;align-items:center;gap:18px;flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:15px;
+    border:1px solid var(--line);border-radius:12px;padding:13px 20px;background:rgba(16,16,38,.55);
+  }
+  .formula .seg{color:var(--muted)}
+  .formula .E{color:var(--E)}.formula .D{color:var(--D)}.formula .S{color:var(--S)}
+  .formula .arrow{color:var(--muted-2)}
+  .cta-row{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    font-family:var(--font-display);font-weight:600;font-size:15px;
+    padding:14px 26px;border-radius:12px;cursor:pointer;transition:transform .15s,box-shadow .25s,background .25s;
+    display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;
+  }
+  .btn.primary{background:linear-gradient(100deg,var(--E),var(--D));color:#fff;box-shadow:0 8px 30px var(--glow)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px var(--glow)}
+  .btn.ghost{background:rgba(16,16,38,.6);border-color:var(--line);color:var(--text)}
+  .btn.ghost:hover{border-color:rgba(140,140,200,.34);transform:translateY(-2px)}
+
+  /* ---------- SECTION SHELL ---------- */
+  section.block{padding:104px 0;position:relative}
+  .block+.block{border-top:1px solid var(--line-soft)}
+  .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;color:var(--muted-2);text-transform:uppercase;margin-bottom:16px}
+  .h2{font-family:var(--font-display);font-weight:700;font-size:clamp(27px,4vw,42px);line-height:1.12;letter-spacing:-.015em}
+  .sub{margin-top:18px;max-width:60ch;color:var(--muted);font-size:16.5px}
+
+  /* what is SDE — three dimensions */
+  .triad{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
+  @media(max-width:820px){.triad{grid-template-columns:1fr}}
+  .dim{
+    border:1px solid var(--line);border-radius:18px;padding:30px 28px;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(12,12,28,.3));
+    position:relative;overflow:hidden;
+  }
+  .dim::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+  .dim.e::before{background:var(--E)} .dim.d::before{background:var(--D)} .dim.s::before{background:var(--S)}
+  .dim .glyph{font-family:var(--font-display);font-weight:800;font-size:46px;line-height:1}
+  .dim.e .glyph{color:var(--E)} .dim.d .glyph{color:var(--D)} .dim.s .glyph{color:var(--S)}
+  .dim .name{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.12em;color:var(--muted);margin:14px 0 12px}
+  .dim h3{font-family:var(--font-display);font-size:19px;font-weight:600;margin-bottom:10px}
+  .dim p{color:var(--muted);font-size:14.8px;line-height:1.7}
+  .triad-note{
+    margin-top:26px;font-size:14.5px;color:var(--muted-2);font-family:var(--font-mono);line-height:1.9;
+    border-left:2px solid var(--line);padding-left:18px;
+  }
+  .triad-note b{color:var(--muted)}
+
+  /* five domains */
+  .domains{margin-top:20px;display:flex;flex-direction:column;gap:22px}
+  .domain{
+    display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:40px;
+    border:1px solid var(--line);border-radius:20px;padding:40px;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(12,12,28,.2));
+    transition:border-color .3s,transform .3s;
+  }
+  .domain:hover{border-color:rgba(140,140,200,.3);transform:translateY(-3px)}
+  @media(max-width:860px){.domain{grid-template-columns:1fr;gap:24px;padding:30px}}
+  .domain .lead .num{font-family:var(--font-mono);font-size:12px;color:var(--muted-2);letter-spacing:.2em}
+  .domain .lead h3{font-family:var(--font-display);font-size:clamp(23px,3vw,31px);font-weight:700;margin:10px 0 16px;letter-spacing:-.01em}
+  .domain .tag{
+    display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;
+    padding:7px 13px;border-radius:100px;border:1px solid var(--line);color:var(--muted);line-height:1.5;
+  }
+  .domain.c-edu h3{color:var(--S)} .domain.c-edu .tag{border-color:rgba(45,225,194,.4);color:var(--S)}
+  .domain.c-hlt h3{color:#7de0a0} .domain.c-hlt .tag{border-color:rgba(125,224,160,.4);color:#7de0a0}
+  .domain.c-biz h3{color:#ffb35c} .domain.c-biz .tag{border-color:rgba(255,179,92,.4);color:#ffb35c}
+  .domain.c-res h3{color:var(--E)} .domain.c-res .tag{border-color:rgba(109,94,246,.45);color:#a79bff}
+  .domain.c-agt h3{color:var(--D)} .domain.c-agt .tag{border-color:rgba(255,92,138,.4);color:var(--D)}
+  .domain .body p{color:var(--text);font-size:16px;margin-bottom:20px;line-height:1.75}
+  .domain .body ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .domain .body li{position:relative;padding-left:22px;color:var(--muted);font-size:14.8px;line-height:1.6}
+  .domain .body li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:2px;background:currentColor;opacity:.6}
+  .domain.c-edu .body li{color:var(--muted)}
+  .domain .body li b{color:var(--text);font-weight:600}
+
+  /* agent product shelf */
+  .shelf-head{margin-top:34px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .shelf-head .st{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--D)}
+  .shelf-head .sk{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;color:var(--muted-2)}
+  .shelf{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:860px){.shelf{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.shelf{grid-template-columns:1fr}}
+  .agent-card{
+    border:1px solid var(--line);border-radius:16px;padding:22px 22px 24px;
+    background:linear-gradient(180deg,rgba(20,18,40,.5),rgba(12,12,28,.25));
+    transition:border-color .3s,transform .3s;position:relative;overflow:hidden;
+  }
+  .agent-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--D),var(--E));opacity:.5}
+  .agent-card:hover{border-color:rgba(255,92,138,.4);transform:translateY(-3px)}
+  .agent-card .an{font-family:var(--font-display);font-weight:600;font-size:16.5px;margin-bottom:8px}
+  .agent-card .ad{color:var(--muted);font-size:14px;line-height:1.65}
+  .agent-card .ax{margin-top:14px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted-2);border-top:1px solid var(--line-soft);padding-top:12px}
+  .shelf-note{margin-top:18px;font-size:13px;color:var(--muted-2);font-family:var(--font-mono);line-height:1.8}
+
+  /* about / company */
+  .about-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:48px;margin-top:48px;align-items:start}
+  @media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:32px}}
+  .about-copy p{color:var(--muted);font-size:16.5px;margin-bottom:18px;line-height:1.8}
+  .about-copy p b{color:var(--text)}
+  .scope{margin-top:24px;border-left:2px solid var(--E);padding-left:20px}
+  .scope .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--muted-2);margin-bottom:8px}
+  .scope p{font-size:14.5px;color:var(--muted);margin:0;line-height:1.75}
+  .reg-card{
+    border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(16,16,38,.5);
+  }
+  .reg-card .top{padding:22px 26px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .reg-card .top .co{font-family:var(--font-display);font-weight:600;font-size:16px}
+  .reg-card .status{font-family:var(--font-mono);font-size:11px;color:var(--S);border:1px solid rgba(45,225,194,.4);border-radius:100px;padding:5px 11px;white-space:nowrap}
+  .reg-row{display:flex;justify-content:space-between;gap:16px;padding:14px 26px;font-size:14px;border-bottom:1px solid var(--line-soft)}
+  .reg-row:last-child{border-bottom:0}
+  .reg-row .k{color:var(--muted-2);font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;flex:none}
+  .reg-row .v{color:var(--text);text-align:right}
+  .reg-row .v.mono{font-family:var(--font-mono);font-size:13px}
+
+  /* footer */
+  footer{border-top:1px solid var(--line-soft);padding:56px 0 44px;color:var(--muted)}
+  .foot-inner{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .foot-brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:700}
+  .foot-meta{font-size:13px;line-height:1.9;color:var(--muted-2);max-width:46ch}
+  .foot-meta .mono{font-family:var(--font-mono)}
+  .note{margin-top:22px;font-size:12.5px;color:var(--muted-2)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+  :focus-visible{outline:2px solid var(--S);outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="娄底华智科技 首页">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="zh">华智科技</span><span class="en">SDE</span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="主导航">
+      <a href="#sde">什么是 SDE</a>
+      <a href="#edu">SDE 教育</a>
+      <a href="#health">SDE 健康</a>
+      <a href="#biz">SDE 商业</a>
+      <a href="#research">SDE 科研</a>
+      <a href="#agents">SDE 智能体</a>
+      <a href="#about">关于华智</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">菜单</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <span class="eyebrow"><span class="dot" aria-hidden="true"></span>娄底华智科技有限公司 · SDE 本体论</span>
+    <h1>世界不是被<span class="fade">发现</span>的，<br>而是<span class="gen">发生</span>的。</h1>
+    <p class="lede">SDE（<b>显露 · 差异 · 纠缠</b>）本体论，把"发生"变成一套可操作的引擎。从教育、健康、商业、科研到智能体——<b>同一套底盘，五个战场。</b></p>
+    <div class="formula" aria-label="存在的基本公式：在 E 中，经 D，成 S">
+      <span class="seg">在 <span class="E">E</span> 中</span>
+      <span class="arrow">→</span>
+      <span class="seg">经 <span class="D">D</span></span>
+      <span class="arrow">→</span>
+      <span class="seg">成 <span class="S">S</span></span>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="#sde">了解 SDE 内核</a>
+      <a class="btn ghost" href="#edu">五大板块</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS SDE -->
+<section class="block" id="sde">
+  <div class="wrap">
+    <p class="kicker reveal">The Engine</p>
+    <h2 class="h2 reveal">三个不可还原的维度</h2>
+    <p class="sub reveal">SDE 不是又一种"三分法"，而是存在与知识的<b style="color:var(--text)">运行机制</b>。三维联动，才是成熟态。</p>
+
+    <div class="triad">
+      <div class="dim e reveal">
+        <div class="glyph">S</div>
+        <div class="name">显露 · SHOW</div>
+        <h3>存在被看见的样子</h3>
+        <p>存在在一定条件下被看见、被维持、被识别的那个样子。它是一条从弱到强的连续谱——结构只是显露最坚硬的那一端，不能拿来命名整条谱。</p>
+      </div>
+      <div class="dim d reveal">
+        <div class="glyph">D</div>
+        <div class="name">差异 · DIFFERENCE</div>
+        <h3>差异序列的运行</h3>
+        <p>何种差异被推进、被抑制、被放大、被收敛成路径。D 关心的是路径如何生成，不是中性的"步骤"或"变化"。它是让底盘长出结构的推进引擎。</p>
+      </div>
+      <div class="dim s reveal">
+        <div class="glyph">E</div>
+        <div class="name">纠缠 · ENTANGLEMENT</div>
+        <h3>发生得以扎根的土壤</h3>
+        <p>存在得以发生的厚度层、沉淀层、实体底盘。E 不是被动的背景，而是参与发生的土壤——纠缠有多厚，显露才能维持到多强。</p>
+      </div>
+    </div>
+
+    <p class="triad-note reveal">
+      三者联动即 <b>成熟态</b>：E 为 D 提供厚度，D 为 S 铺出路径，S 又反过来稳定 D、沉淀 E。<br>
+      起点则是"空虚混沌"——<b>空</b> = 无成熟 S，<b>虚</b> = E 未厚成，<b>混沌</b> = D 未成序。成长，就是让它们逐渐长齐。
+    </p>
+  </div>
+</section>
+
+<!-- FIVE DOMAINS -->
+<section class="block" id="edu">
+  <div class="wrap">
+    <p class="kicker reveal">Five Fields · 五大板块</p>
+    <h2 class="h2 reveal">同一套底盘，落到五个战场</h2>
+    <p class="sub reveal">SDE 是底层引擎，对不同战场换不同的显露态。术语退居幕后，落点各不相同。</p>
+
+    <div class="domains">
+
+      <!-- 教育 -->
+      <article class="domain c-edu reveal">
+        <div class="lead">
+          <div class="num">FIELD 01</div>
+          <h3>SDE 教育</h3>
+          <span class="tag">学习发生在发生链的激活点</span>
+        </div>
+        <div class="body">
+          <p>教育的本质，不是把结构 S 搬运给学生，而是帮学生在自己的 E 里，走过 D 的路径。信息搬运量最大的学生，往往不是学得最好的那个。</p>
+          <ul>
+            <li><b>德麦国际 SDE 学校</b>：从"发现"范式转向"发生"范式的系统训练。</li>
+            <li>每个核心概念配三种条件——<b>S 条件</b>（结构准备）· <b>D 条件</b>（差异激活）· <b>E 条件</b>（纠缠建立）。</li>
+            <li>把发生学从课堂讲授，做成可复用的教学操作系统。</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 健康 -->
+      <article class="domain c-hlt reveal" id="health">
+        <div class="lead">
+          <div class="num">FIELD 02</div>
+          <h3>SDE 健康</h3>
+          <span class="tag">E3 能量调度 · S 结构维护 · D2 灵活</span>
+        </div>
+        <div class="body">
+          <p>把发生学落到身体上。慢性病不是单点故障，而是 <b>D 流程失能 + E 产能缺陷</b> 的长期纠缠。</p>
+          <ul>
+            <li><b>SDE 逆龄操作系统</b>：动态呼吸（能量调度）· 动态瑜伽（结构维护）· 动态冥想（灵活性训练）。</li>
+            <li><b>三医功能位</b>：西医守红线 · 中医扶场减阻 · 互动医学修复中段。</li>
+            <li>融合金刚功、长寿功与中医养生，把传统功法接入 SDE 的能量—结构—路径框架。</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 商业 -->
+      <article class="domain c-biz reveal" id="biz">
+        <div class="lead">
+          <div class="num">FIELD 03</div>
+          <h3>SDE 商业</h3>
+          <span class="tag">痛点 → 流程 → 底盘 → 变现</span>
+        </div>
+        <div class="body">
+          <p>把 SDE 术语翻成产品语言：<b>D2 是流程，E 是数据底盘</b>。从用户痛点进入，四件事必须全部到位。</p>
+          <ul>
+            <li><b>痛点 / 流程 / 交付物 / 变现路径</b>——缺一件，方案就停在半成品。</li>
+            <li>把方法论沉淀成可交付、可复用、可变现的智能体产品。</li>
+            <li>为不同行业锻造专属的落地链路，而非通用模板。</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 科研 -->
+      <article class="domain c-res reveal" id="research">
+        <div class="lead">
+          <div class="num">FIELD 04</div>
+          <h3>SDE 科研</h3>
+          <span class="tag">抓核→抓裂缝→重组→改姓→锻造→投放</span>
+        </div>
+        <div class="body">
+          <p><b>龙爪手</b>：以 SDE 本体论为思想指导，对旧思想做裂缝扫描，用新概念完成建构性填补的知识武器锻造法。</p>
+          <ul>
+            <li><b>六爪动作链 + 武器锻造五律</b>：论文正文零 SDE 术语残留，SDE 只作隐性引擎。</li>
+            <li>已锻造武器横跨数学、现象学、哲学——伞场微积分、意义有限发生律、D-算子统一框架。</li>
+            <li>提供事前诊断工具，而非仅事后描述范式转换。</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 智能体 -->
+      <article class="domain c-agt reveal" id="agents">
+        <div class="lead">
+          <div class="num">FIELD 05</div>
+          <h3>SDE 智能体</h3>
+          <span class="tag">信息发生 → 知识发生</span>
+        </div>
+        <div class="body">
+          <p>大模型 E2 极强，但 E1 为空、E3 不存在——这是架构层面的缺陷：<b>信息发生 ≠ 知识发生</b>。SDE 智能体给它补上扎根与内驱。</p>
+          <ul>
+            <li>已建智能体覆盖经典解读、解题引擎、内容锻造、情报分析、知识发生等方向。</li>
+            <li><b>GCG 三模型分工 + 三角互消</b>，让输出既不发散、也不拘束、也不堆砌，趋向"人味"。</li>
+            <li>桌面级深度定制，把 SDE 引擎装进可交付的工具里。</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="shelf-head reveal">
+      <span class="st">已锻造的智能体</span>
+      <span class="sk">DESKTOP AGENTS · SDE ENGINE INSIDE</span>
+    </div>
+    <div class="shelf">
+      <div class="agent-card reveal">
+        <div class="an">易经解读智能体</div>
+        <div class="ad">三种解读模式的解卦引擎，跨会话沉淀使用者的 SDE 画像，越用越懂你。</div>
+        <div class="ax">经典解读</div>
+      </div>
+      <div class="agent-card reveal">
+        <div class="an">道德经解题引擎</div>
+        <div class="ad">RAG 检索 + 涌现脊机制，把经典调成能应对现实难题的解题器。</div>
+        <div class="ax">解题引擎</div>
+      </div>
+      <div class="agent-card reveal">
+        <div class="an">九宫格分镜锻造</div>
+        <div class="ad">面向电商产品摄影的分镜生成，一句话需求锻造成一整套可拍脚本。</div>
+        <div class="ax">内容锻造</div>
+      </div>
+      <div class="agent-card reveal">
+        <div class="an">竞品情报智能体</div>
+        <div class="ad">抖音 / 视频号对标账号的自动情报分析，把散乱数据收敛成打法。</div>
+        <div class="ax">情报分析</div>
+      </div>
+      <div class="agent-card reveal">
+        <div class="an">数学知识发生引擎</div>
+        <div class="ad">从裂缝到概念，现场演示数学知识"如何被发生出来"，而非被搬运。</div>
+        <div class="ax">知识发生</div>
+      </div>
+      <div class="agent-card reveal">
+        <div class="an">提智问答</div>
+        <div class="ad">增强版对照裸模型，用实测数据把 SDE 给大模型带来的"提智"量化出来。</div>
+        <div class="ax">能力对照</div>
+      </div>
+    </div>
+    <p class="shelf-note reveal">// 以上名称与入选项为草稿，按印象整理。不想公开的可删，对外正式名称你定，我来替换。</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="block" id="about">
+  <div class="wrap">
+    <p class="kicker reveal">About · 关于华智</p>
+    <h2 class="h2 reveal">以 SDE 本体论为内核的技术创新平台</h2>
+
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p>娄底华智科技有限公司成立于 <b>2020 年 6 月 8 日</b>，坐落于湖南娄底，法定代表人 <b>王德生</b>。我们以近十年打磨的 SDE（显露·差异·纠缠）本体论为思想内核，把"发生"从哲学命题，锻造成可教学、可养生、可产品、可发表、可运行的完整体系。</p>
+        <p>一套底盘，五个战场——教育、健康、商业、科研、智能体。我们不做零散的功能拼装，而是让同一个发生学引擎，在每个领域里长出属于它自己的显露态。</p>
+        <div class="scope">
+          <div class="lbl">经营范围</div>
+          <p>智能技术、网络技术、计算机技术、电子技术领域内的技术开发、技术转让、技术咨询、技术服务；信息系统集成服务；基础、应用、支撑软件开发；信息采集新技术研发与推广。</p>
+        </div>
+      </div>
+
+      <aside class="reg-card reveal" aria-label="工商登记信息">
+        <div class="top">
+          <span class="co">娄底华智科技有限公司</span>
+          <span class="status">存续 · 在营</span>
+        </div>
+        <div class="reg-row"><span class="k">统一社会信用代码</span><span class="v mono">91431300MA4RDMLN1T</span></div>
+        <div class="reg-row"><span class="k">法定代表人</span><span class="v">王德生</span></div>
+        <div class="reg-row"><span class="k">公司类型</span><span class="v">有限责任公司（自然人独资）</span></div>
+        <div class="reg-row"><span class="k">注册资本</span><span class="v">1000 万元人民币</span></div>
+        <div class="reg-row"><span class="k">成立日期</span><span class="v mono">2020-06-08</span></div>
+        <div class="reg-row"><span class="k">登记机关</span><span class="v">娄底市市场监督管理局</span></div>
+        <div class="reg-row"><span class="k">注册地址</span><span class="v">湖南省娄底市娄星区湘中大道<br>小科社区皇城御园 A 栋 1101 号</span></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <div class="foot-brand"><span class="mark" aria-hidden="true" style="width:24px;height:24px;border-radius:7px;background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E))"></span>华智科技 · SDE</div>
+      <p class="note">世界不是被发现的，而是发生的。</p>
+    </div>
+    <div class="foot-meta">
+      娄底华智科技有限公司<br>
+      湖南省娄底市娄星区湘中大道小科社区皇城御园 A 栋 1101 号<br>
+      <span class="mono">统一社会信用代码 · 91431300MA4RDMLN1T</span><br>
+      <span class="note">© 2026 华智科技　本页为网站演示稿，联系方式与栏目内容可按需补充。</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---- mobile nav ---- */
+  var toggle=document.getElementById('navToggle');
+  var links=document.getElementById('navLinks');
+  if(toggle){
+    toggle.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+    });
+    links.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){links.classList.remove('open');toggle.setAttribute('aria-expanded','false');});
+    });
+  }
+
+  /* ---- reveal on scroll ---- */
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:.14});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+
+  /* ---- entanglement network (signature) ---- */
+  var canvas=document.getElementById('net');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var DIM=[[109,94,246],[255,92,138],[45,225,194]]; // E, D, S
+  var nodes=[],W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2),raf=null,t=0;
+
+  function size(){
+    var r=canvas.getBoundingClientRect();
+    W=r.width;H=r.height;
+    canvas.width=W*DPR;canvas.height=H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    build();
+  }
+  function build(){
+    var count=Math.max(34,Math.min(72,Math.round(W*H/17000)));
+    nodes=[];
+    for(var i=0;i<count;i++){
+      nodes.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,
+        d:i%3, r:Math.random()*1.6+1,
+        ph:Math.random()*Math.PI*2
+      });
+    }
+  }
+  var LINK=118; // link distance
+  function frame(){
+    t+=0.006;
+    ctx.clearRect(0,0,W,H);
+    // genesis pulse: a moving focus that "crystallizes" nearby links (在E中经D成S)
+    var fx=(Math.sin(t*0.6)*0.5+0.5)*W;
+    var fy=(Math.cos(t*0.45)*0.5+0.5)*H;
+
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i];
+      n.x+=n.vx;n.y+=n.vy;
+      if(n.x<0||n.x>W)n.vx*=-1;
+      if(n.y<0||n.y>H)n.vy*=-1;
+      n.x=Math.max(0,Math.min(W,n.x));n.y=Math.max(0,Math.min(H,n.y));
+    }
+    // links
+    for(var a=0;a<nodes.length;a++){
+      for(var b=a+1;b<nodes.length;b++){
+        var na=nodes[a],nb=nodes[b];
+        var dx=na.x-nb.x,dy=na.y-nb.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<LINK){
+          var mx=(na.x+nb.x)/2,my=(na.y+nb.y)/2;
+          var pf=Math.max(0,1-Math.sqrt((mx-fx)*(mx-fx)+(my-fy)*(my-fy))/260); // proximity to pulse
+          var base=(1-dist/LINK)*0.16;
+          var op=base+pf*0.5*base+pf*0.22;
+          var c=DIM[na.d];
+          ctx.strokeStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+op.toFixed(3)+')';
+          ctx.lineWidth=0.6+pf*0.8;
+          ctx.beginPath();ctx.moveTo(na.x,na.y);ctx.lineTo(nb.x,nb.y);ctx.stroke();
+        }
+      }
+    }
+    // nodes
+    for(var k=0;k<nodes.length;k++){
+      var m=nodes[k],c2=DIM[m.d];
+      var pf2=Math.max(0,1-Math.sqrt((m.x-fx)*(m.x-fx)+(m.y-fy)*(m.y-fy))/240);
+      var pulse=0.55+Math.sin(t*3+m.ph)*0.18+pf2*0.5;
+      ctx.beginPath();
+      ctx.arc(m.x,m.y,m.r+pf2*1.3,0,Math.PI*2);
+      ctx.fillStyle='rgba('+c2[0]+','+c2[1]+','+c2[2]+','+Math.min(1,pulse).toFixed(3)+')';
+      if(pf2>0.15){ctx.shadowColor='rgba('+c2[0]+','+c2[1]+','+c2[2]+',0.9)';ctx.shadowBlur=8*pf2;}
+      ctx.fill();ctx.shadowBlur=0;
+    }
+    raf=requestAnimationFrame(frame);
+  }
+  function start(){if(!raf)raf=requestAnimationFrame(frame);}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=null;}}
+
+  size();
+  window.addEventListener('resize',function(){stop();size();if(!reduce)start();});
+  document.addEventListener('visibilitychange',function(){document.hidden?stop():(!reduce&&start());});
+
+  if(reduce){ // static single frame for reduced motion
+    t=1.2;frame();stop();
+  }else{
+    start();
+  }
+})();
+</script>
+</body>
+</html>
