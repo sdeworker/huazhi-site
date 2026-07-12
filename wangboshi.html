@@ -26,6 +26,13 @@
   .bio-copy .hl{border-left:2px solid var(--E);padding-left:20px;margin-top:24px}
   .bio-copy .hl p{margin:0;font-size:15px;color:var(--muted)}
 
+  /* 数据卡（移动端两列） */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px}
+  @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);gap:12px}}
+  .stat-c{border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))}
+  .stat-c .n{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1}
+  .stat-c .l{font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px}
+
   /* 时间脊 */
   .spine{position:relative;margin-top:26px;padding-left:34px}
   .spine::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;
@@ -94,23 +101,11 @@
     <span class="col-origin">王德生 · 德麦国际 SDE 学派创立者</span>
 
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px">
-      <div style="border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--S);line-height:1">100</div>
-        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px">SDE 智能体</div>
-      </div>
-      <div style="border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--E);line-height:1">10</div>
-        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px">行业覆盖</div>
-      </div>
-      <div style="border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--D);line-height:1">55+</div>
-        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px">专著背书</div>
-      </div>
-      <div style="border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))">
-        <div style="font-family:var(--font-display);font-weight:800;font-size:34px;color:#ffb35c;line-height:1">47</div>
-        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px">顶刊论文</div>
-      </div>
+    <div class="stats">
+      <div class="stat-c"><div class="n" style="color:var(--S)">100</div><div class="l">SDE 智能体</div></div>
+      <div class="stat-c"><div class="n" style="color:var(--E)">10</div><div class="l">行业覆盖</div></div>
+      <div class="stat-c"><div class="n" style="color:var(--D)">55+</div><div class="l">专著背书</div></div>
+      <div class="stat-c"><div class="n" style="color:#ffb35c">47</div><div class="l">顶刊论文</div></div>
     </div>
 
     <div class="bio">
@@ -120,7 +115,7 @@
           <div class="br">WANG DESHENG</div>
         </div>
         <div class="bio-row"><span class="k">学术背景</span><span class="v">中国科学院数学研究所 博士</span></div>
-        <div class="bio-row"><span class="k">研究经历</span><span class="v">南洋理工大学</span></div>
+        <div class="bio-row"><span class="k">研究经历</span><span class="v">斯旺西大学 · 南洋理工大学</span></div>
         <div class="bio-row"><span class="k">创立</span><span class="v">德麦国际 SDE 学派</span></div>
         <div class="bio-row"><span class="k">核心体系</span><span class="v">SDE 本体论<br>（显露 · 差异 · 纠缠）</span></div>
         <div class="bio-row"><span class="k">现任</span><span class="v">娄底华智科技有限公司<br>法定代表人</span></div>
