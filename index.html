@@ -52,6 +52,9 @@
   }
   .nav-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
   .brand{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:700;letter-spacing:.02em}
+  .brand-wrap{display:flex;flex-direction:column;gap:1px}
+  .brand-sub{margin-left:38px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted-2);line-height:1.2;transition:color .2s}
+  .brand-sub:hover,.brand-sub:focus-visible{color:var(--S)}
   .brand .mark{
     width:26px;height:26px;flex:none;border-radius:7px;
     background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E));
@@ -239,10 +242,13 @@
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="#top" aria-label="娄底华智科技 首页">
-      <span class="mark" aria-hidden="true"></span>
-      <span class="zh">华智科技</span><span class="en">SDE</span>
-    </a>
+    <div class="brand-wrap">
+      <a class="brand" href="#top" aria-label="娄底华智科技 首页">
+        <span class="mark" aria-hidden="true"></span>
+        <span class="zh">华智科技</span><span class="en">SDE</span>
+      </a>
+      <a class="brand-sub" href="https://sdeuniverses.com/" target="_blank" rel="noopener">德麦国际 · 母站 →</a>
+    </div>
     <nav class="nav-links" id="navLinks" aria-label="主导航">
       <a href="#sde">什么是 SDE</a>
       <a href="#edu">SDE 教育</a>
