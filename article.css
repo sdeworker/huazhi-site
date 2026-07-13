@@ -192,7 +192,7 @@ header.nav{
   font-family:var(--font-body);
 }
 .pull p{color:var(--text);font-size:17px;line-height:1.85;margin:0;font-weight:500;text-align:left}
-.pull .pk{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--E);text-transform:uppercase;margin-bottom:12px}
+.pull .pk{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.005em;line-height:1.5;color:var(--E);margin-bottom:14px}
 
 /* 内嵌图示 */
 .fig{margin:44px 0}
