@@ -3,70 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>王博士与 SDE | 娄底华智科技</title>
-<meta name="description" content="王德生博士与 SDE（显露·差异·纠缠）本体论——从 2017 年的三视角，到今天的三维发生学引擎，近十年的思想谱系。">
+<title>王博士与 SDE · 解构大师 | 娄底华智科技</title>
+<meta name="description" content="解构大师——用发生学的眼，解构思想史上的巨人。福柯、黑格尔、尼采、柏拉图、康德、德里达：先把对手扶到最强，再指出他那记重拳偏了几度。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="article.css">
 <style>
-  /* 本页专用：谱系时间轴 + 人物卡 */
-  .bio{display:grid;grid-template-columns:1fr 1.4fr;gap:44px;margin-top:52px;align-items:start}
-  @media(max-width:860px){.bio{grid-template-columns:1fr;gap:30px}}
-  .bio-card{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,rgba(22,20,48,.6),rgba(11,11,26,.3))}
-  .bio-card .bt{padding:26px 28px;border-bottom:1px solid var(--line-soft)}
-  .bio-card .bn{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:-.01em}
-  .bio-card .br{margin-top:8px;font-family:var(--font-mono);font-size:12px;color:var(--E);letter-spacing:.1em}
-  .bio-row{display:flex;gap:14px;padding:14px 28px;font-size:14.5px;border-bottom:1px solid var(--line-soft)}
-  .bio-row:last-child{border-bottom:0}
-  .bio-row .k{color:var(--muted-2);font-family:var(--font-mono);font-size:11.5px;flex:none;width:5.5em;padding-top:2px}
-  .bio-row .v{color:var(--text);line-height:1.65}
-  .bio-copy p{color:var(--muted);font-size:16.5px;line-height:1.85;margin-bottom:18px}
-  .bio-copy p b{color:var(--text)}
-  .bio-copy .hl{border-left:2px solid var(--E);padding-left:20px;margin-top:24px}
-  .bio-copy .hl p{margin:0;font-size:15px;color:var(--muted)}
+  .creed{
+    margin-top:34px;border:1px solid var(--line);border-left:3px solid var(--D);
+    border-radius:0 16px 16px 0;padding:28px 32px;
+    background:linear-gradient(180deg,rgba(26,18,40,.6),rgba(13,13,30,.35));max-width:70ch;
+  }
+  .creed p{font-family:var(--font-read);font-size:17.5px;line-height:1.9;color:var(--text);margin:0}
+  .creed p b{color:#fff}
+  .creed .sub{margin-top:14px;font-size:15px;color:var(--muted);font-family:var(--font-body);line-height:1.75}
 
-  /* 数据卡（移动端两列） */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px}
-  @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);gap:12px}}
-  .stat-c{border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))}
-  .stat-c .n{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1}
-  .stat-c .l{font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);letter-spacing:.1em;margin-top:8px}
+  .giants{display:flex;flex-direction:column;gap:18px;margin-top:26px}
+  .giant{
+    display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.55fr);gap:36px;
+    border:1px solid var(--line);border-radius:20px;padding:34px 36px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.42),rgba(11,11,26,.2));
+    transition:border-color .35s,transform .35s,box-shadow .35s;
+  }
+  .giant::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;
+    background:radial-gradient(500px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.045),transparent 42%);
+  }
+  .giant:hover{border-color:rgba(255,92,138,.35);transform:translateY(-3px);box-shadow:0 26px 60px -30px rgba(255,92,138,.4)}
+  .giant:hover::after{opacity:1}
+  @media(max-width:880px){.giant{grid-template-columns:1fr;gap:22px;padding:28px 26px}}
+  .giant > *{position:relative;z-index:1}
+  .g-no{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.18em;color:var(--muted-2)}
+  .g-name{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.05;margin:10px 0 6px;letter-spacing:-.02em}
+  .g-en{font-family:var(--font-mono);font-size:12.5px;color:var(--muted-2);letter-spacing:.1em}
+  .g-meta{margin-top:16px;font-family:var(--font-mono);font-size:11.5px;color:var(--muted-2);line-height:1.85}
+  .giant.c-n .g-name{color:var(--D)} .giant.c-h .g-name{color:var(--E)}
+  .giant.c-f .g-name{color:var(--S)} .giant.c-p .g-name{color:#ffb35c}
+  .giant.c-k .g-name{color:#7de0a0} .giant.c-d .g-name{color:#a79bff}
+  .g-title{font-family:var(--font-display);font-weight:700;font-size:clamp(19px,2.4vw,24px);line-height:1.4;margin-bottom:14px;letter-spacing:-.01em}
+  .g-desc{color:var(--muted);font-size:15.5px;line-height:1.8;margin-bottom:20px}
+  .g-desc b{color:var(--text)}
+  .g-links{display:flex;gap:10px;flex-wrap:wrap}
+  .g-links a{
+    display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:12px;
+    padding:9px 15px;border-radius:100px;border:1px solid var(--line);color:var(--muted);
+    transition:border-color .25s,color .25s,background .25s;
+  }
+  .g-links a:hover{border-color:rgba(255,92,138,.5);color:var(--text);background:rgba(255,92,138,.07)}
+  .g-links a.pri{border-color:rgba(255,92,138,.4);color:var(--D)}
+  .g-links a.pri:hover{background:rgba(255,92,138,.12)}
+  .g-badge{
+    display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;
+    padding:5px 11px;border-radius:100px;margin-bottom:14px;
+    border:1px solid rgba(255,92,138,.45);color:var(--D);background:rgba(255,92,138,.07);
+  }
 
-  /* 时间脊 */
-  .spine{position:relative;margin-top:26px;padding-left:34px}
-  .spine::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;
-    background:linear-gradient(180deg,var(--S),var(--E) 55%,var(--D))}
-  .ev{position:relative;padding-bottom:34px}
-  .ev:last-child{padding-bottom:0}
-  .ev::before{content:"";position:absolute;left:-30px;top:6px;width:12px;height:12px;border-radius:50%;
-    background:var(--ink);border:2px solid var(--E);box-shadow:0 0 0 4px rgba(109,94,246,.12)}
-  .ev.s1::before{border-color:var(--S);box-shadow:0 0 0 4px rgba(45,225,194,.12)}
-  .ev.s3::before{border-color:var(--D);box-shadow:0 0 0 4px rgba(255,92,138,.12)}
-  .ev .yr{font-family:var(--font-mono);font-size:12.5px;color:var(--muted-2);letter-spacing:.1em}
-  .ev h3{font-family:var(--font-display);font-weight:600;font-size:18.5px;margin:6px 0 8px;color:var(--text)}
-  .ev p{color:var(--muted);font-size:15px;line-height:1.75;margin:0}
-  .ev p b{color:var(--text)}
+  .extras{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:26px}
+  @media(max-width:760px){.extras{grid-template-columns:1fr}}
+  .extra{
+    border:1px solid var(--line);border-radius:16px;padding:24px 26px;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));
+    transition:border-color .3s,transform .3s;
+  }
+  .extra:hover{border-color:rgba(109,94,246,.42);transform:translateY(-2px)}
+  .extra .ek{font-family:var(--font-mono);font-size:11px;letter-spacing:.13em;color:var(--muted-2);margin-bottom:11px}
+  .extra h4{font-family:var(--font-display);font-weight:600;font-size:17.5px;line-height:1.45;margin-bottom:10px}
+  .extra p{color:var(--muted);font-size:14.5px;line-height:1.75;margin-bottom:16px}
+  .extra a{font-family:var(--font-mono);font-size:12px;color:var(--S);display:inline-flex;gap:7px;transition:gap .25s}
+  .extra:hover a{gap:12px}
 
-  /* 骨架卡 */
-  .bones{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
-  @media(max-width:860px){.bones{grid-template-columns:1fr}}
-  .bone{border:1px solid var(--line);border-radius:16px;padding:24px 22px;position:relative;overflow:hidden;
-    background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28));transition:border-color .35s,transform .35s}
-  .bone:hover{border-color:rgba(109,94,246,.42);transform:translateY(-3px)}
-  .bone .bk{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--muted-2);margin-bottom:10px}
-  .bone h4{font-family:var(--font-display);font-weight:600;font-size:17px;margin-bottom:9px}
-  .bone p{color:var(--muted);font-size:14.3px;line-height:1.7;margin:0}
-
-  /* 著作 */
-  .books{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px}
-  @media(max-width:700px){.books{grid-template-columns:1fr}}
-  .book{border:1px solid var(--line);border-radius:14px;padding:20px 22px;background:rgba(16,16,36,.4);
-    transition:border-color .3s;display:flex;gap:14px;align-items:flex-start}
-  .book:hover{border-color:rgba(140,140,200,.32)}
-  .book .bx{width:4px;align-self:stretch;border-radius:2px;background:var(--E);flex:none;opacity:.6}
-  .book .bn2{font-family:var(--font-display);font-weight:600;font-size:15.5px;line-height:1.45;margin-bottom:6px}
-  .book .bd{color:var(--muted-2);font-size:13px;line-height:1.6;font-family:var(--font-mono)}
+  .foot-cta{
+    margin-top:70px;border:1px solid var(--line);border-radius:20px;padding:44px 40px;text-align:center;
+    background:linear-gradient(180deg,rgba(22,18,48,.5),rgba(11,11,26,.25));
+  }
+  .foot-cta p{font-family:var(--font-read);font-size:18px;color:var(--text);line-height:1.9;max-width:52ch;margin:0 auto 26px}
+  .foot-cta p b{color:#fff}
 </style>
 </head>
 <body>
@@ -81,8 +93,8 @@
       <a href="index.html#sde">什么是 SDE</a>
       <a href="index.html#edu">五大板块</a>
       <a href="wangboshi.html" class="on">王博士与 SDE</a>
-      <a href="articles.html">三视角智慧</a>
       <a href="zhuanzhu.html">华智专著栏</a>
+      <a href="articles.html">三视角智慧</a>
       <a href="index.html#about">关于华智</a>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">菜单</button>
@@ -91,180 +103,200 @@
 
 <section class="masthead">
   <div class="wrap inner">
-    <p class="col-kick">Column · 专栏</p>
-    <h1 class="col-title">王博士<span class="g">与 SDE</span></h1>
+    <p class="col-kick">王博士与 SDE · Column</p>
+    <h1 class="col-title">解构<span class="g">大师</span></h1>
     <p class="col-lede">
-      一个人，一套体系，近<b>十年</b>。<br>
-      从 2017 年的「三视角」，到今天的<b>显露 · 差异 · 纠缠</b>——SDE 不是一夜之间造出来的概念，
-      是一条被反复推翻、反复重铸的思想谱系。<br>
-      <b>每一个 SDE 智能体，都由龙爪手锻造，由 55+ 部专著背书。</b>
+      用一双「事物如何发生」的眼，<b>逐一解构思想史上的巨人</b>。
     </p>
-    <span class="col-origin">王德生 · 德麦国际 SDE 学派创立者</span>
 
-
-    <div class="stats">
-      <div class="stat-c"><div class="n" style="color:var(--S)">100</div><div class="l">SDE 智能体</div></div>
-      <div class="stat-c"><div class="n" style="color:var(--E)">10</div><div class="l">行业覆盖</div></div>
-      <div class="stat-c"><div class="n" style="color:var(--D)">55+</div><div class="l">专著背书</div></div>
-      <div class="stat-c"><div class="n" style="color:#ffb35c">47</div><div class="l">顶刊论文</div></div>
+    <div class="creed">
+      <p><b>带着敬意的精确</b>——先把对手扶到最强、最难反驳的状态，再指出他那记重拳，究竟<b>偏了几度、偏在哪一个关节上</b>。</p>
+      <p class="sub">
+        这里不抬杠，也不膜拜。每一篇，都找到一位巨人思想里<b style="color:var(--text)">最承重的那道接缝</b>——看清它怎么拼、哪里拼歪、
+        歪掉的这一处又如何决定了整座建筑的形状。
+      </p>
     </div>
 
-    <div class="bio">
-      <aside class="bio-card">
-        <div class="bt">
-          <div class="bn">王德生</div>
-          <div class="br">WANG DESHENG</div>
-        </div>
-        <div class="bio-row"><span class="k">学术背景</span><span class="v">中国科学院数学研究所 博士</span></div>
-        <div class="bio-row"><span class="k">研究经历</span><span class="v">斯旺西大学 · 南洋理工大学</span></div>
-        <div class="bio-row"><span class="k">创立</span><span class="v">德麦国际 SDE 学派</span></div>
-        <div class="bio-row"><span class="k">核心体系</span><span class="v">SDE 本体论<br>（显露 · 差异 · 纠缠）</span></div>
-        <div class="bio-row"><span class="k">现任</span><span class="v">娄底华智科技有限公司<br>法定代表人</span></div>
-      </aside>
-
-      <div class="bio-copy">
-        <p>SDE 的起点，不是一个哲学命题，而是一个<b>教学困惑</b>：为什么学生背下了所有公式，却依然不会思考？</p>
-        <p>2017 年，这个困惑第一次结晶成一套可操作的方法——<b>三视角</b>：对比（本质）、变化（例显）、分布（处境）。它同时给出了物理学的对应：<b>粒子 · 波 · 场</b>。</p>
-        <p>九年之后回看，那两条线索并没有被丢弃——它们成了今天 <b>27 宫格</b>里的 C 规范轴与 M 模态轴。第三条轴（真 · 善 · 美）是后来才长出来的。</p>
-        <div class="hl">
-          <p>这套体系最反常的地方在于：它不问「世界<b>是</b>什么」，而问「世界<b>怎样发生</b>」。<br>
-          结构不是起点，是结果；本质不是预设，是显露的最坚硬的那一端。</p>
-        </div>
-      </div>
-    </div>
+    <span class="col-origin" style="margin-top:28px">共 6 篇 · 每篇约 2–3 万字 · 王德生 · 2026</span>
   </div>
 </section>
 
 <section class="list-sec">
   <div class="wrap">
     <div class="list-head">
-      <h2>十年谱系</h2>
-      <span class="cnt">2017 → 2026 · 一条被反复重铸的线</span>
+      <h2>解构巨人</h2>
+      <span class="cnt">6 篇 · 全文托管于 SDE Universes</span>
     </div>
 
-    <div class="spine">
-      <div class="ev s1">
-        <div class="yr">2017</div>
-        <h3>三视角：对比 · 变化 · 分布</h3>
-        <p>体系的源头形态。公众号「三视角智慧」开始连载，把认识论做成可操作的三扇窗，并明确对应到<b>粒子 · 波 · 场</b>。今天看，这正是 27 宫格中 C 规范轴与 M 模态轴的雏形。</p>
-      </div>
+    <div class="giants">
 
-      <div class="ev">
-        <div class="yr">中期</div>
-        <h3>从「结构」到「显露」</h3>
-        <p>早期曾以「结构—差异—纠缠」为名。后来这个命名被<b>推翻</b>：结构只是显露最坚硬的一端，用它命名整条谱，是拿特例当全体。S 从此确定为 <b>Show（显露）</b>。</p>
-      </div>
+      <article class="giant c-n reveal">
+        <div>
+          <div class="g-no">MASTERS · NO.3</div>
+          <div class="g-name">尼采</div>
+          <div class="g-en">NIETZSCHE</div>
+          <div class="g-meta">约 2 万字<br>2026-07-13</div>
+        </div>
+        <div>
+          <span class="g-badge">最新</span>
+          <h3 class="g-title">解构尼采：视角主义的错误</h3>
+          <p class="g-desc">
+            你以为你在「选一个角度」看杯子——尼采把这<b>一秒的错觉</b>，盖成了一整座权力哲学。
+            断口，在<b>第二步</b>：他把三界当场的联动，误记成了「主体的选择」；而剩下的那一界，就只能叫权力。
+            一只白瓷杯贯穿全篇。
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/nietzsche-perspectivism/" target="_blank" rel="noopener">📖 长文阅读</a>
+          </div>
+        </div>
+      </article>
 
-      <div class="ev">
-        <div class="yr">近年</div>
-        <h3>三维联动：E 是土壤，D 是路径，S 是花</h3>
-        <p>E（纠缠）不再是被动背景，而是<b>参与发生的土壤</b>；D（差异）不是中性的「步骤」，而是路径如何被推进、被收敛。三者联动，方为成熟态。</p>
-      </div>
+      <article class="giant c-h reveal">
+        <div>
+          <div class="g-no">MASTERS · NO.2</div>
+          <div class="g-name">黑格尔</div>
+          <div class="g-en">HEGEL</div>
+          <div class="g-meta">约 2.5 万字<br>三种读法<br>2026-07</div>
+        </div>
+        <div>
+          <h3 class="g-title">黑格尔造出了那台引擎，却把它锁进了一个圆</h3>
+          <p class="g-desc">
+            他是最像「发生」的人——造出了矛盾驱动、自我推进的辩证法引擎，说对了<b>「生成高于存在」</b>。
+            可他在最后一步，把这台开放的引擎，<b>锁进了一个必然完满的圆</b>：先在的绝对精神、注定的终点。
+            SDE 在他的圆上凿开三个断口，把圆打开成永不收口的螺旋。<b>他差的，只是一个字：开。</b>
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/deconstructing-hegel/" target="_blank" rel="noopener">📖 长文阅读</a>
+            <a href="https://sdeuniverses.com/column/deconstructing-hegel/read.html" target="_blank" rel="noopener">📄 在线 PDF</a>
+            <a href="https://sdeuniverses.com/column/deconstructing-hegel/deconstructing-hegel.pdf" target="_blank" rel="noopener">⬇ 下载</a>
+          </div>
+        </div>
+      </article>
 
-      <div class="ev s3">
-        <div class="yr">2026 · 7</div>
-        <h3>《SDE 本体论入门》</h3>
-        <p>约 39 万字的权威定本。确立 27 宫格为 S 维度内部的 <b>C ⊗ M ⊗ V</b> 张量；确立 E 与 S 共享同一副骨架（「合龙」）；三大意义律、123 原理、三态（混沌—介生—秩序）各归其位。</p>
-      </div>
+      <article class="giant c-f reveal">
+        <div>
+          <div class="g-no">MASTERS · NO.1</div>
+          <div class="g-name">福柯</div>
+          <div class="g-en">FOUCAULT</div>
+          <div class="g-meta">约 3 万字<br>三种读法<br>2026-07</div>
+        </div>
+        <div>
+          <h3 class="g-title">福柯站到了悬崖边，却没有桥</h3>
+          <p class="g-desc">
+            两千五百年的权力思想都在问「<b>谁</b>在统治」。福柯把问题翻转成「权力<b>如何运作</b>」，
+            一举看穿了知识与权力的合谋——可他拆掉旧主体之后，<b>没能为「意义如何重新发生」架起一座桥</b>，
+            于是停在了悬崖边。本文在他的悬崖上，架起三座桥。
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/deconstructing-foucault/" target="_blank" rel="noopener">📖 长文阅读</a>
+            <a href="https://sdeuniverses.com/column/deconstructing-foucault/read.html" target="_blank" rel="noopener">📄 在线 PDF</a>
+            <a href="https://sdeuniverses.com/column/deconstructing-foucault/deconstructing-foucault.pdf" target="_blank" rel="noopener">⬇ 下载</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="giant c-p reveal">
+        <div>
+          <div class="g-no">解构西方哲学家 · 之一</div>
+          <div class="g-name">柏拉图</div>
+          <div class="g-en">PLATO</div>
+          <div class="g-meta">深度长文<br>2026-07</div>
+        </div>
+        <div>
+          <h3 class="g-title">柏拉图的理念，不是被回忆的，而是被发生的</h3>
+          <p class="g-desc">
+            理念不是灵魂在出生前见过、此生只需回忆的现成模板。
+            SDE 顺着柏拉图的「回忆说」往下追问：<b>那被回忆的东西，最初又是怎么来的？</b>
+            答案是——它不是被回忆的，是<b>在追问中当场被发生的</b>。
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/plato-idea-genesis/" target="_blank" rel="noopener">📖 长文阅读</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="giant c-k reveal">
+        <div>
+          <div class="g-no">解构西方哲学家 · 之二</div>
+          <div class="g-name">康德</div>
+          <div class="g-en">KANT</div>
+          <div class="g-meta">深度长文<br>2026-07</div>
+        </div>
+        <div>
+          <h3 class="g-title">康德的范畴，不是先天的模具，而是沉淀的纠缠</h3>
+          <p class="g-desc">
+            康德说，十二范畴是先天装好、扣在一切经验之上的模具。
+            SDE 反问：<b>模具自己又是从哪儿来的？</b>
+            范畴不是天生现成的铁模，而是<b>无数次纠缠沉淀下来的结晶</b>——它会生长，也会变形。
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/kant-categories-genesis/" target="_blank" rel="noopener">📖 长文阅读</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="giant c-d reveal">
+        <div>
+          <div class="g-no">王博士与 SDE</div>
+          <div class="g-name">德里达</div>
+          <div class="g-en">DERRIDA</div>
+          <div class="g-meta">长文阅读<br>据《SDE本体论入门》<br>第二十七章</div>
+        </div>
+        <div>
+          <h3 class="g-title">德里达那一拳，为何砸空？</h3>
+          <p class="g-desc">
+            德里达一拳砸碎了结构主义的中心、在场与稳定所指，延异（différance）让意义永远被推迟。
+            这一拳<b>锐利无匹</b>——可它最终砸在了哪里？
+            为什么<b>砸得结构粉碎，却砸不出一个新的立足之地</b>？
+          </p>
+          <div class="g-links">
+            <a class="pri" href="https://sdeuniverses.com/column/derrida-deconstruction/" target="_blank" rel="noopener">📖 长文阅读</a>
+          </div>
+        </div>
+      </article>
+
     </div>
 
     <div class="list-head" style="margin-top:76px">
-      <h2>思想骨架</h2>
-      <span class="cnt">THE ENGINE</span>
+      <h2>方法与导读</h2>
+      <span class="cnt">相关阅读</span>
     </div>
 
-    <div class="bones">
-      <div class="bone">
-        <div class="bk">27 宫格</div>
-        <h4>C ⊗ M ⊗ V</h4>
-        <p>S 维度内部的坐标系。C 规范轴（对比·变化·分布）× M 模态轴（粒子·波·场）× V 价值轴（真·善·美），3×3×3。</p>
+    <div class="extras">
+      <div class="extra reveal">
+        <div class="ek">解构西方哲学家 · 之三</div>
+        <h4>尼采的视角，不是主体选择的，而是发生出来的</h4>
+        <p>与头条同一命门的另一角切入：视角从来不是一个主体站在高处、从一份菜单里挑出来的。它是在「看」的当场，被三界联动发生出来的一个侧面——<b style="color:var(--text)">主体，只是这场发生在下游落下的一个签名。</b></p>
+        <a href="https://sdeuniverses.com/column/nietzsche-perspective-genesis/" target="_blank" rel="noopener">阅读全文 →</a>
       </div>
-      <div class="bone">
-        <div class="bk">合龙</div>
-        <h4>E 与 S 同骨架</h4>
-        <p>S 是纠缠开出的花，E 是纠缠扎根的土。两者共享同一副 C⊗M⊗V 骨架——只是一个作坐标，一个作上升的动作。</p>
+
+      <div class="extra reveal">
+        <div class="ek">导读 · 《权力为何物》</div>
+        <h4>视角不是主体选择的，而是发生的</h4>
+        <p>尼采两句最爆炸的话——「没有事实，只有解释」「只有一种视角式的看」——把它们一路顺到底，会得到什么？与「解构尼采」同一命门，却从<b style="color:var(--text)">「权力如何发生」</b>这一侧切入。</p>
+        <a href="https://sdeuniverses.com/column/nietzsche-perspectivism-power-genesis/" target="_blank" rel="noopener">阅读全文 →</a>
       </div>
-      <div class="bone">
-        <div class="bk">三大意义律</div>
-        <h4>目标 · 路径 · 动力</h4>
-        <p>特征律生成目标，自由律生成路径，幸福律生成动力（张力累积 → 模式跃迁 → 能量释放）。三律齐运，发生才成立。</p>
+
+      <div class="extra reveal">
+        <div class="ek">方法 · 批判性思维</div>
+        <h4>真正的批判，首先是一种显影</h4>
+        <p>GPT 时代，旧式批判性思维失灵了——「识别前提、检查逻辑、比较证据」那套动作，本是为单一、稳定、透明的对象设计的。而 GPT 吐出的，是<b style="color:var(--text)">多元交融、表面顺滑内里复合的显影体</b>。真正的批判，得先学会把它显影出来。</p>
+        <a href="https://sdeuniverses.com/column/critique-is-first-an-unveiling/" target="_blank" rel="noopener">阅读全文 →</a>
       </div>
-      <div class="bone">
-        <div class="bk">123 原理</div>
-        <h4>矛盾的结算点</h4>
-        <p>D 与 E 的矛盾累积 → 逼迫 S 改变 → S 回写、重置 D 与 E。S 是矛盾的结算点，不是矛盾的起源。</p>
-      </div>
-      <div class="bone">
-        <div class="bk">三态</div>
-        <h4>混沌 — 介生 — 秩序</h4>
-        <p>S、D、E 各自都有三态。<b>创造只发生在介生态</b>——不在死寂的秩序里，也不在无形的混沌里。</p>
-      </div>
-      <div class="bone">
-        <div class="bk">龙爪手</div>
-        <h4>知识武器锻造法</h4>
-        <p>抓核 → 抓裂缝 → 重组 → 改姓 → 锻造 → 投放。以 SDE 为隐性引擎，对旧思想做裂缝扫描，正文零术语残留。</p>
+
+      <div class="extra reveal">
+        <div class="ek">往期全集</div>
+        <h4>解构大师 · 专栏总目</h4>
+        <p>六篇解构巨人的完整归档，含长文阅读、在线 PDF、下载三种读法。托管于 SDE Universes。</p>
+        <a href="https://sdeuniverses.com/column/deconstruction-master/" target="_blank" rel="noopener">进入专栏总目 →</a>
       </div>
     </div>
 
-    <div class="list-head" style="margin-top:76px">
-      <h2>专著</h2>
-      <span class="cnt">55+ 部 · 以下为代表作</span>
-    </div>
-
-    <div class="books">
-      <div class="book">
-        <div class="bx"></div>
-        <div>
-          <div class="bn2">《SDE 本体论入门》</div>
-          <div class="bd">2026 · 约 39 万字 · 权威定本</div>
-        </div>
-      </div>
-      <div class="book">
-        <div class="bx" style="background:var(--D)"></div>
-        <div>
-          <div class="bn2">《SDE 智能体导论》</div>
-          <div class="bd">信息发生 ≠ 知识发生</div>
-        </div>
-      </div>
-      <div class="book">
-        <div class="bx" style="background:var(--S)"></div>
-        <div>
-          <div class="bn2">《SDE 语言发生学》</div>
-          <div class="bd">语言如何被发生出来</div>
-        </div>
-      </div>
-      <div class="book">
-        <div class="bx" style="background:#7de0a0"></div>
-        <div>
-          <div class="bn2">《SDE 0–3 岁婴儿教育发生学》</div>
-          <div class="bd">发生学落到最早的起点</div>
-        </div>
-      </div>
-      <div class="book">
-        <div class="bx" style="background:#ffb35c"></div>
-        <div>
-          <div class="bn2">《SDE 科研思想创新导论》</div>
-          <div class="bd">龙爪手 · 事前诊断而非事后描述</div>
-        </div>
-      </div>
-      <div class="book">
-        <div class="bx" style="background:#a79bff"></div>
-        <div>
-          <div class="bn2">已锻造武器</div>
-          <div class="bd">伞场微积分 · 意义有限发生律 · D-算子统一框架</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-top:70px;border:1px solid var(--line);border-radius:18px;padding:34px;background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2))">
-      <div style="font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;color:var(--muted-2);margin-bottom:14px">源头 · ORIGIN</div>
-      <h3 style="font-family:var(--font-display);font-weight:700;font-size:23px;margin-bottom:12px">想看这套体系最早的样子？</h3>
-      <p style="color:var(--muted);font-size:15.5px;line-height:1.8;max-width:60ch;margin-bottom:22px">
-        「三视角智慧」专栏收录了王德生 2017 年的原始连载。那时还没有「SDE」这个名字，
-        但对比·变化·分布、粒子·波·场——今天 27 宫格的两条轴，已经全在里面了。
-      </p>
-      <a href="articles.html" style="display:inline-flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:600;font-size:15px;padding:13px 24px;border-radius:12px;background:linear-gradient(100deg,var(--E),var(--D));color:#fff;box-shadow:0 8px 30px var(--glow)">
-        进入「三视角智慧」 →
+    <div class="foot-cta reveal">
+      <p>每一篇解构，靠的都不是嗓门，<br><b>是一双能看清「事情如何发生」的眼。</b></p>
+      <a href="index.html#sde"
+         style="display:inline-flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:600;font-size:15px;padding:14px 26px;border-radius:12px;background:linear-gradient(100deg,var(--E),var(--D));color:#fff;box-shadow:0 8px 30px var(--glow)">
+        这双眼，你也可以借来一用 →
       </a>
     </div>
   </div>
@@ -283,7 +315,7 @@
       娄底华智科技有限公司<br>
       湖南省娄底市娄星区湘中大道小科社区皇城御园 A 栋 1101 号<br>
       <span class="mono">统一社会信用代码 · 91431300MA4RDMLN1T</span><br>
-      <span class="note">© 2026 华智科技</span>
+      <span class="note">© 2026 华智科技　解构大师专栏全文托管于 sdeuniverses.com</span>
     </div>
   </div>
 </footer>
@@ -300,7 +332,16 @@
       es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
     },{threshold:.12});
     document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  }else{
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
   }
+  document.querySelectorAll('.giant').forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var r=el.getBoundingClientRect();
+      el.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      el.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    },{passive:true});
+  });
 })();
 </script>
 </body>
