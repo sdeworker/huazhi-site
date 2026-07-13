@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDE 智能体集群 | 娄底华智科技</title>
+<meta name="description" content="98 个 SDE 智能体，覆盖 10 大行业。每个智能体背后，是 SDE 发生学的方法论锻造——不是把知识装进机器，是把「知识如何发生」装进机器。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+<style>
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;max-width:640px}
+  @media(max-width:640px){.stats{grid-template-columns:1fr}}
+  .st{border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;
+    background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))}
+  .st .v{font-family:var(--font-display);font-weight:800;font-size:36px;line-height:1}
+  .st .l{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);letter-spacing:.1em;margin-top:9px}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:9px;margin-top:30px}
+  .tab{font-family:var(--font-display);font-weight:600;font-size:14px;padding:10px 17px;border-radius:100px;
+    border:1px solid var(--line);background:rgba(13,13,30,.5);color:var(--muted);cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;transition:all .25s}
+  .tab:hover{color:var(--text);border-color:rgba(140,140,200,.4)}
+  .tab.on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent)}
+  .tab .tn{font-family:var(--font-mono);font-size:11px;opacity:.65}
+
+  .p-head{display:flex;align-items:baseline;gap:14px;margin:34px 0 20px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .p-en{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;color:var(--c)}
+  .p-zh{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--text)}
+
+  .ags{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:13px}
+  .ag{border:1px solid var(--line);border-radius:13px;padding:19px 20px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.42),rgba(11,11,26,.2));
+    transition:border-color .28s,transform .28s}
+  .ag::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--c);opacity:.42;transition:opacity .28s}
+  .ag:hover{border-color:color-mix(in srgb,var(--c) 45%,transparent);transform:translateY(-2px)}
+  .ag:hover::before{opacity:1}
+  .ag-n{font-family:var(--font-display);font-weight:600;font-size:15.5px;margin-bottom:8px;color:var(--text)}
+  .ag-d{font-size:13.2px;line-height:1.7;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="zh">华智科技</span><span class="en">SDE</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#sde">什么是 SDE</a>
+      <a href="wangboshi.html">王博士与 SDE</a>
+      <a href="jiqun.html" class="on">智能体集群</a>
+      <a href="sixiang.html">思想宇宙</a>
+      <a href="zhuanzhu.html">华智专著栏</a>
+      <a href="articles.html">三视角智慧</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">菜单</button>
+  </div>
+</header>
+
+<section class="masthead">
+  <div class="wrap inner">
+    <p class="col-kick">SDE 智能体集群 · S 层</p>
+    <h1 class="col-title">98 个<span class="g">智能体</span></h1>
+    <p class="col-lede">
+      覆盖 <b>10 大行业</b>。每一个智能体背后，都是 SDE 发生学的方法论锻造——<br>
+      <b>不是把知识装进机器，是把「知识如何发生」装进机器。</b>
+    </p>
+
+    <div class="stats">
+      <div class="st"><div class="v" style="color:var(--S)">98</div><div class="l">SDE 智能体</div></div>
+      <div class="st"><div class="v" style="color:var(--E)">10</div><div class="l">行业覆盖</div></div>
+      <div class="st"><div class="v" style="color:var(--D)">1</div><div class="l">母体引擎</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="list-sec">
+  <div class="wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-t="edu" style="--c:#C69A3A">教育革命<span class="tn">10</span></button>
+      <button class="tab" data-t="med" style="--c:#5FA84A">健康与生命<span class="tn">10</span></button>
+      <button class="tab" data-t="ent" style="--c:#6D5EF6">企业管理<span class="tn">10</span></button>
+      <button class="tab" data-t="aca" style="--c:#2DE1C2">科研学术<span class="tn">10</span></button>
+      <button class="tab" data-t="tec" style="--c:#3FA0A0">科技创新<span class="tn">9</span></button>
+      <button class="tab" data-t="fin" style="--c:#FF5C8A">金融投资<span class="tn">10</span></button>
+      <button class="tab" data-t="law" style="--c:#7de0a0">法律<span class="tn">9</span></button>
+      <button class="tab" data-t="art" style="--c:#ffb35c">艺术创作<span class="tn">10</span></button>
+      <button class="tab" data-t="mda" style="--c:#a79bff">传媒内容<span class="tn">10</span></button>
+      <button class="tab" data-t="gov" style="--c:#3FA88C">治理与社科<span class="tn">10</span></button>
+    </div>
+
+      <div class="panel" data-p="edu" style="--c:#C69A3A">
+        <div class="p-head"><span class="p-en">EDUCATION</span><span class="p-zh">教育革命</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">课程设计师</div>
+          <div class="ag-d">根据学生画像生成个性化课程大纲与学习路径。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">教案发生器</div>
+          <div class="ag-d">一键生成完整教案 + 教学步骤 + 课堂互动设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">作业诊断师</div>
+          <div class="ag-d">诊断学生作业中的结构性漏洞与发生学断点。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">个性化辅导员</div>
+          <div class="ag-d">基于 SDE 发生学的一对一动态辅导。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">考试命题师</div>
+          <div class="ag-d">按知识发生路径出题，而非按知识点清单。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">学习路径规划师</div>
+          <div class="ag-d">为跨学科学习者规划长程发展路径。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">论文指导师</div>
+          <div class="ag-d">学位论文从选题到定稿的全程陪跑。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">教材改写师</div>
+          <div class="ag-d">把现有教材用 SDE 发生顺序重写。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">教育咨询师</div>
+          <div class="ag-d">学校/机构层面的教育改革咨询。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">学习动机师</div>
+          <div class="ag-d">重建学习者的意义动机与内在驱动。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="med" style="--c:#5FA84A" hidden>
+        <div class="p-head"><span class="p-en">MEDICINE</span><span class="p-zh">健康与生命</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">诊断助理</div>
+          <div class="ag-d">症状分析 · 鉴别诊断 · 检查建议。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">慢病管理师</div>
+          <div class="ag-d">高血压/糖尿病从指标控制转向结构重建。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">心理健康顾问</div>
+          <div class="ag-d">抑郁/焦虑的 SDE 视角诊断与干预。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">营养规划师</div>
+          <div class="ag-d">个性化营养方案 · 慢性病膳食干预。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">康复指导师</div>
+          <div class="ag-d">术后康复 · 运动康复 · 功能重建。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">医患沟通师</div>
+          <div class="ag-d">医嘱翻译 · 就医流程 · 医患矛盾调解。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">病历整理师</div>
+          <div class="ag-d">多家医院病历整合 · 时间线重建。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">医学文献分析师</div>
+          <div class="ag-d">最新研究综述 · 证据等级评估。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">睡眠改善师</div>
+          <div class="ag-d">睡眠结构诊断 · 节律重建方案。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">长寿策略师</div>
+          <div class="ag-d">Sirtuins-AMPK-mTOR 三角的个性化干预。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="ent" style="--c:#6D5EF6" hidden>
+        <div class="p-head"><span class="p-en">ENTERPRISE</span><span class="p-zh">企业管理</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">战略咨询师</div>
+          <div class="ag-d">企业战略诊断 · 方向选择 · 路径规划。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">组织诊断师</div>
+          <div class="ag-d">组织能力 · 文化 · 结构三维诊断。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">HR 规划师</div>
+          <div class="ag-d">人才梯队 · 能力模型 · 继任规划。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">商业模式设计师</div>
+          <div class="ag-d">价值主张 · 盈利模式 · 护城河设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">运营优化师</div>
+          <div class="ag-d">流程再造 · 效率提升 · 成本结构。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">企业文化建构师</div>
+          <div class="ag-d">以意义三律重建企业文化底盘。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">绩效设计师</div>
+          <div class="ag-d">KPI/OKR 设计 · 激励机制 · 考核闭环。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">领导力教练</div>
+          <div class="ag-d">CEO/高管一对一发展教练。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">危机管理师</div>
+          <div class="ag-d">重大危机响应 · 声誉修复 · 情景推演。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">董事会顾问</div>
+          <div class="ag-d">董事会议程 · 治理结构 · 股东沟通。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="aca" style="--c:#2DE1C2" hidden>
+        <div class="p-head"><span class="p-en">ACADEMIA</span><span class="p-zh">科研学术</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">文献综述师</div>
+          <div class="ag-d">研究领域全景综述 · 流派谱系梳理。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">研究设计师</div>
+          <div class="ag-d">研究问题 · 方法选择 · 效度保障。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">论文发生师</div>
+          <div class="ag-d">论文从裂缝识别到成文的完整发生。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">数据分析师</div>
+          <div class="ag-d">定量分析 · 可视化 · 统计诊断。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">同行评议师</div>
+          <div class="ag-d">投稿前的预审 · 反驳预测 · 修订建议。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">学术写作教练</div>
+          <div class="ag-d">论文语言 · 论证链 · 读者意识训练。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">开题报告师</div>
+          <div class="ag-d">博硕开题 · 基金申请 · 评审导向。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">期刊匹配师</div>
+          <div class="ag-d">投稿期刊精准匹配 · 影响因子 · 审稿周期。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">答辩训练师</div>
+          <div class="ag-d">答辩情景演练 · 关键问题预判。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">课题诊断师</div>
+          <div class="ag-d">研究方向的裂缝扫描与生长性评估。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="tec" style="--c:#3FA0A0" hidden>
+        <div class="p-head"><span class="p-en">TECHNOLOGY</span><span class="p-zh">科技创新</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">AI 应用设计师</div>
+          <div class="ag-d">AI 产品的场景发掘与体验设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">产品发生师</div>
+          <div class="ag-d">产品从需求裂缝到 MVP 的完整发生。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">UX 研究师</div>
+          <div class="ag-d">用户研究 · 体验地图 · 可用性测试。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">技术评估师</div>
+          <div class="ag-d">新技术成熟度 · 落地性 · ROI 评估。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">原型设计师</div>
+          <div class="ag-d">快速原型 · 交互验证 · 迭代优化。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">专利策略师</div>
+          <div class="ag-d">技术专利布局 · 规避设计 · 许可策略。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">开源项目顾问</div>
+          <div class="ag-d">开源战略 · 社区运营 · 商业化路径。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">创业孵化师</div>
+          <div class="ag-d">从 0 到 1 · 早期团队 · 融资路径。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">科技伦理师</div>
+          <div class="ag-d">AI/基因/数据科技的伦理审查。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="fin" style="--c:#FF5C8A" hidden>
+        <div class="p-head"><span class="p-en">FINANCE</span><span class="p-zh">金融投资</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">投研分析师</div>
+          <div class="ag-d">行业/公司深度研究 · 估值建模。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">财报解读师</div>
+          <div class="ag-d">三表联动分析 · 异常点识别。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">宏观经济分析师</div>
+          <div class="ag-d">宏观周期 · 政策解读 · 资产配置建议。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">量化策略师</div>
+          <div class="ag-d">因子挖掘 · 回测 · 策略组合。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">风险管理师</div>
+          <div class="ag-d">VaR/压力测试 · 尾部风险识别。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">个人财务规划师</div>
+          <div class="ag-d">家庭资产规划 · 税务 · 传承。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">公司估值师</div>
+          <div class="ag-d">DCF/可比/期权法估值与敏感度分析。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">行业研究师</div>
+          <div class="ag-d">行业图谱 · 竞争格局 · 投资机会。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">尽调专员</div>
+          <div class="ag-d">财务/法务/商业尽调要点清单。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">并购顾问</div>
+          <div class="ag-d">交易结构 · 估值谈判 · 整合路径。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="law" style="--c:#7de0a0" hidden>
+        <div class="p-head"><span class="p-en">LAW</span><span class="p-zh">法律</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">合同审查师</div>
+          <div class="ag-d">条款风险识别、对手方陷阱扫描、修订建议。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">法律文书撰写师</div>
+          <div class="ag-d">起诉状、答辩状、法律意见书一键生成。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">案例检索师</div>
+          <div class="ag-d">全球判例库检索 + 相似度排序 + 要点提炼。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">法律顾问</div>
+          <div class="ag-d">企业/个人法律咨询 · 可工作的策略建议。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">合规审查师</div>
+          <div class="ag-d">跨司法辖区合规要点与冲突点识别。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">知识产权专员</div>
+          <div class="ag-d">专利/商标/著作权的布局与风险诊断。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">诉讼策略师</div>
+          <div class="ag-d">诉讼路径规划 · 证据链梳理 · 对抗预测。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">劳动法顾问</div>
+          <div class="ag-d">用工合规 · 劳动争议 · 员工关系处理。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">法律培训师</div>
+          <div class="ag-d">面向非法律人员的企业法务能力培训。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="art" style="--c:#ffb35c" hidden>
+        <div class="p-head"><span class="p-en">ART</span><span class="p-zh">艺术创作</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">剧本发生师</div>
+          <div class="ag-d">剧本从主题到场次的 SDE 结构化发生。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">小说结构师</div>
+          <div class="ag-d">长篇小说的底层结构与节奏设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">诗歌炼字师</div>
+          <div class="ag-d">意象选择 · 声韵打磨 · 张力控制。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">艺术评论师</div>
+          <div class="ag-d">作品的发生学评论 · 超越风格学分析。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">视觉概念师</div>
+          <div class="ag-d">品牌/展览/插画的视觉概念生成。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">音乐结构师</div>
+          <div class="ag-d">编曲结构 · 情绪曲线 · 段落发生学。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">舞蹈编导</div>
+          <div class="ag-d">舞蹈动机发生 · 空间调度 · 叙事整合。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">游戏叙事师</div>
+          <div class="ag-d">游戏世界观 · 任务链 · 玩家体验弧。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">广告文案师</div>
+          <div class="ag-d">洞察-概念-文案的三阶生成。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">品牌美学师</div>
+          <div class="ag-d">品牌视觉体系 · 调性 · 触点设计。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="mda" style="--c:#a79bff" hidden>
+        <div class="p-head"><span class="p-en">MEDIA</span><span class="p-zh">传媒内容</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">新闻写作师</div>
+          <div class="ag-d">事实核查 · 结构化叙事 · 中立表达。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">深度报道师</div>
+          <div class="ag-d">长篇深度报道的选题、采访、写作。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">社交媒体策划师</div>
+          <div class="ag-d">平台策略 · 内容日历 · 互动设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">短视频脚本师</div>
+          <div class="ag-d">抖音/小红书/YouTube Shorts 脚本。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">播客策划师</div>
+          <div class="ag-d">播客选题 · 嘉宾策略 · 节目结构。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">传播策略师</div>
+          <div class="ag-d">品牌/组织的整合传播战略。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">公关危机师</div>
+          <div class="ag-d">舆情监测 · 危机响应 · 声誉修复。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">新媒体运营师</div>
+          <div class="ag-d">账号运营 · 粉丝增长 · 变现路径。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">内容编辑师</div>
+          <div class="ag-d">稿件编辑 · 风格统一 · 事实校验。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">品牌故事师</div>
+          <div class="ag-d">品牌的本源故事 · 叙事线构建。</div>
+        </div>
+        </div>
+      </div>
+      <div class="panel" data-p="gov" style="--c:#3FA88C" hidden>
+        <div class="p-head"><span class="p-en">GOVERNANCE</span><span class="p-zh">治理与社科</span></div>
+        <div class="ags">
+        <div class="ag">
+          <div class="ag-n">政策研究师</div>
+          <div class="ag-d">公共政策分析 · 比较研究 · 建议报告。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">社区治理师</div>
+          <div class="ag-d">社区自治 · 居民参与 · 矛盾调解。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">社会创新师</div>
+          <div class="ag-d">社会问题的发生学诊断与系统性创新。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">城市规划师</div>
+          <div class="ag-d">城市空间 · 功能分区 · 人本尺度。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">环境治理师</div>
+          <div class="ag-d">环保政策 · ESG 战略 · 可持续方案。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">公共服务设计师</div>
+          <div class="ag-d">政府服务的用户体验再设计。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">社会调研师</div>
+          <div class="ag-d">问卷/访谈/民族志 · 混合方法研究。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">非营利运营师</div>
+          <div class="ag-d">NGO 战略 · 募款 · 项目评估。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">政府沟通师</div>
+          <div class="ag-d">政策阐释 · 公众沟通 · 危机应对。</div>
+        </div>
+        <div class="ag">
+          <div class="ag-n">青年发展师</div>
+          <div class="ag-d">青年政策 · 成长支持 · 代际对话。</div>
+        </div>
+        </div>
+      </div>
+
+    <div style="margin-top:70px;border:1px solid var(--line);border-radius:20px;padding:40px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.5),rgba(11,11,26,.25))">
+      <p style="font-family:var(--font-read);font-size:18px;color:var(--text);line-height:1.9;max-width:52ch;margin:0 auto 26px">
+        通往真正通用智能的，不是更多「已完成的知识」，<br><b style="color:#fff">而是「知识如何发生」的过程本身。</b>
+      </p>
+      <a href="https://sdeuniverses.com/#matrix" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:600;font-size:15px;padding:14px 26px;border-radius:12px;background:linear-gradient(100deg,var(--E),var(--D));color:#fff;box-shadow:0 8px 30px var(--glow)">
+        进入智能体集群 →
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <div class="foot-brand">
+        <span class="mark" style="width:24px;height:24px;border-radius:7px;background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E))"></span>
+        华智科技 · SDE
+      </div>
+      <p class="note">世界不是被发现的，而是发生的。</p>
+    </div>
+    <div class="foot-meta">
+      娄底华智科技有限公司<br>
+      <span class="mono">统一社会信用代码 · 91431300MA4RDMLN1T</span><br>
+      <span class="note">© 2026 华智科技　智能体集群托管于 sdeuniverses.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var t=document.getElementById('navToggle'), l=document.getElementById('navLinks');
+  if(t){t.addEventListener('click',function(){
+    var o=l.classList.toggle('open'); t.setAttribute('aria-expanded',o?'true':'false');
+  });}
+  document.getElementById('tabs').addEventListener('click',function(e){
+    var b=e.target.closest('.tab'); if(!b) return;
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    var k=b.dataset.t;
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.hidden = (p.dataset.p !== k);
+    });
+  });
+})();
+</script>
+</body>
+</html>
