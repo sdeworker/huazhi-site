@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SDE 智问 · 提智对照</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -196,11 +197,20 @@
   <div class="paper-box">
     <div class="paper-hd"><span class="t" id="paperTitle">扩写论文</span><button class="x" id="paperClose">×</button></div>
     <div class="paper-body" id="paperBody"></div>
-    <div class="paper-ft"><button id="paperSave">下载论文（.md）</button></div>
+    <div class="paper-ft"><span id="paperMeta" style="font-family:var(--font-m);font-size:12px;color:var(--muted-2);align-self:center;margin-right:auto"></span><button id="paperSaveMd" style="background:rgba(11,11,26,.6);border:1px solid var(--line);color:var(--muted)">下载 .md</button><button id="paperSave">下载 Word（.docx）</button></div>
   </div>
 </div>
 
 <script>
+/* ============================================================
+   SDE 智问 · 提智引擎（编排层）
+   核心职责：不是"调用模型"，而是"逼模型真的跑完三条新生臂，
+   并在每一步留下可校验的痕迹"。工序跑残了，前端当场看得见。
+
+   访客自带 Key，全程浏览器内运行。境外基底经 /api/llm-proxy 只转发。
+   ============================================================ */
+
+// ---------- 基底配置 ----------
 /* ============================================================
    SDE 智问 · 提智引擎（编排层）
    核心职责：不是"调用模型"，而是"逼模型真的跑完三条新生臂，
@@ -418,14 +428,14 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
 
 检验：这个最终判断，能不能被 C1、C2、C3 中任何单独一个得出？如果能，就是失败，重来。
 
-同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n最终产出约 3000 字（2500–3500 字），把那个单视角不可达的判断展开讲透，锋利、零术语。
+同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n最终产出不少于 2800 字、不多于 3400 字。把那个单视角不可达的判断充分展开讲透——它为何成立、如何运作、有何后果，锋利、零术语。
 
 输出格式（严格）：
 <reachable_by_single>这个最终判断能否被单条臂单独得出（yes=失败/no=成功）</reachable_by_single>
 <falsifiers>你给了几条可操作证伪条款（数字）</falsifiers>
 <final>[二阶碰撞的最终判断 + 证伪条款，零术语，这是给用户的核心产出]</final>` }
   ];
-  const raw = await rawCall(baseKey, msgs, { maxTokens: 5500, label: '二阶碰撞' });
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 5500, temperature: 0.6, label: '二阶碰撞' });
   return {
     raw,
     reachableBySingle: /yes/i.test(extractBlock(raw, 'reachable_by_single') || ''),
@@ -439,7 +449,7 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
    ============================================================ */
 async function armBaseline(baseKey, question) {
   // 裸模型：不给任何 SDE
-  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n请给出约 3000 字（2500–3500 字）的完整回答。' }], { maxTokens: 5000, label: '裸模型（基线A）' });
+  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n要求：回答必须充分展开，不少于 2800 字，不多于 3400 字。内容单薄时要深入细节、举例、分情况讨论，把话说透，不要草草收尾。' }], { maxTokens: 5200, temperature: 0.6, label: '裸模型（基线A）' });
   return raw;
 }
 async function armConventional(baseKey, question) {
@@ -447,7 +457,7 @@ async function armConventional(baseKey, question) {
   const raw = await rawCall(baseKey, [{ role: 'user', content:
 `用严谨的研究方法回答这个问题：先提出2-3个竞争性猜想，各自给出支持证据与反证，最后择优给出结论。
 
-问题：${question}\n\n全文约 3000 字（2500–3500 字）。` }], { maxTokens: 5000, label: '常规科研（基线B）' });
+问题：${question}\n\n要求：全文不少于 2800 字，不多于 3400 字，充分展开每个猜想的论证。` }], { maxTokens: 5200, temperature: 0.6, label: '常规科研（基线B）' });
   return raw;
 }
 
@@ -565,41 +575,79 @@ async function expandToPaper(baseKey, reflection, question, sourceLabel, coreJud
   const useReflection = !!reflection;
   const sys = useReflection
     ? armSystem(reflection)
-    : '你是一位严谨的学术写作者，把给定的核心判断扩写成一篇结构完整、论证扎实的正式长文。';
+    : '你是一位严谨的学术研究者，把给定的核心判断扩写成一篇符合学术规范的正式论文。语言精确、论证扎实、结构完整。';
 
-  // 分段生成，避免单次截断（每段约 5000 字，四段拼成 ~2万字）
+  // 第一步：先让模型据核心判断，拟定标题、摘要、关键词、参考文献框架
+  emitEvent('expand', '拟定论文框架（标题·摘要·关键词）…', {section:'meta'});
+  const metaRaw = await rawCall(baseKey, [
+    { role:'system', content: sys },
+    { role:'user', content:
+`原始问题：${question}
+核心判断：${coreJudgment}
+
+为这个核心判断撰写一篇学术论文的元信息。严格按格式输出：
+<title>一个学术化的论文标题（不超过30字，不要用问句）</title>
+<abstract>中文摘要，200-300字，概括研究问题、核心论点、论证路径与结论</abstract>
+<keywords>4-6个关键词，顿号分隔</keywords>
+<refs>8-12条参考文献，中英文混合，须是该领域真实存在的经典文献或合理的学术引用格式（作者. 标题. 期刊/出版社, 年份.）。每条一行。</refs>` }
+  ], { maxTokens: 2000, temperature: 0.5, label: '论文框架' });
+
+  const title = extractBlock(metaRaw,'title') || `关于「${question}」的研究`;
+  const abstract = extractBlock(metaRaw,'abstract') || '';
+  const keywords = extractBlock(metaRaw,'keywords') || '';
+  const refs = extractBlock(metaRaw,'refs') || '';
+
+  // 正文分节（规范学术结构，各节字数硬性下限）
   const sections = [
-    { key: 'intro',   title: '一、问题的提出与核心命题', words: 4000,
-      spec: '交代问题背景、既有解释的局限，然后清晰地立起核心命题。' },
-    { key: 'mech',    title: '二、机制展开：它为何如此发生', words: 6000,
-      spec: '把核心判断的内在机制层层拆开，给出推演链条与关键环节。' },
-    { key: 'evidence',title: '三、证据、反例与边界', words: 6000,
-      spec: '正面证据 + 主动接住最扎手的反例 + 划定这个判断的失效边界（可证伪条款）。' },
-    { key: 'concl',   title: '四、推论与开放问题', words: 4000,
-      spec: '给出可操作的推论，诚实列出这个判断自己尚未解决的裂缝。' },
+    { key:'intro', title:'一、引言', words:'2500-3000', 
+      spec:'交代研究背景、既有研究的局限、本文要解决的问题，并在末尾清晰地提出核心论点。不要写"本文将…"这类元叙述，直接展开论述。' },
+    { key:'mech', title:'二、核心机制分析', words:'3500-4000',
+      spec:'把核心判断的内在机制层层拆解。最多分3-4个子机制（用 ### 三级标题），每个子机制深入论证。禁止无限罗列到"第十层"。' },
+    { key:'evidence', title:'三、证据、反例与边界', words:'3000-3500',
+      spec:'分三部分（用 ### 三级标题）：正面证据；主动接住最强反例并回应；划定本判断的失效边界（即可证伪条件）。' },
+    { key:'concl', title:'四、结论与展望', words:'2000-2500',
+      spec:'总结核心论点，给出可操作推论，诚实指出本研究尚未解决的问题与未来方向。' },
   ];
 
-  let paper = `# 关于「${question}」的深度论文\n\n> 核心判断源自：${sourceLabel}\n\n---\n\n`;
-  const context = `原始问题：${question}\n\n这篇论文要扩写的核心判断：\n${coreJudgment}`;
+  // 组装（规范骨架）
+  let paper = `# ${title}\n\n`;
+  paper += `**摘要**　${abstract}\n\n`;
+  paper += `**关键词**　${keywords}\n\n`;
+  paper += `---\n\n`;
+
+  const context = `论文标题：${title}\n原始问题：${question}\n核心论点：\n${coreJudgment}`;
 
   for (const s of sections) {
-    emitEvent('expand', `正在写「${s.title}」…`, {section: s.key});
-    const msg = [
-      { role: 'system', content: sys },
-      { role: 'user', content:
+    emitEvent('expand', `正在撰写「${s.title}」…`, {section:s.key});
+    const part = await rawCall(baseKey, [
+      { role:'system', content: sys },
+      { role:'user', content:
 `${context}
 
-现在扩写这一节：【${s.title}】
-要求：${s.spec}
-约 ${s.words} 字。直接写正文，不要重复标题，不要写"本节将…"这类废话。${useReflection ? '保持零术语（改姓铁律），用本地话语。' : ''}` }
-    ];
-    const part = await rawCall(baseKey, msg, { maxTokens: 8000, label: `扩写·${s.title}` });
-    paper += `## ${s.title}\n\n${part}\n\n`;
+现在撰写论文的这一节：【${s.title}】
+${s.spec}
+字数要求：${s.words}字，必须写够，不足则深入细节、举例、分情况讨论。
+直接写正文，第一行不要重复节标题（我已经排好版），不要写"本节…"这类话。${useReflection ? '保持零术语（改姓铁律），用本地学术话语。' : ''}` }
+    ], { maxTokens: 7000, temperature: 0.6, label: `撰写·${s.title}` });
+    // 去掉模型可能重复写的标题行
+    let body = part.trim();
+    body = body.replace(new RegExp('^#{1,4}\\s*' + s.title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\s*\\n+'), '');
+    body = body.replace(/^#{1,4}\s*[一二三四]、[^\n]*\n+/, '');
+    paper += `## ${s.title}\n\n${body}\n\n`;
   }
-  emitEvent('expand-done', '论文完成', {chars: paper.length});
-  return paper;
-}
 
+  // 参考文献
+  if (refs) {
+    paper += `## 参考文献\n\n`;
+    refs.split('\n').map(r=>r.trim()).filter(Boolean).forEach((r,i)=>{
+      const clean = r.replace(/^\[?\d+\]?[.、]?\s*/, '');
+      paper += `[${i+1}] ${clean}\n\n`;
+    });
+  }
+
+  emitEvent('expand-done', '论文完成', {chars: paper.length});
+  return { paper, title, abstract, keywords, refs };
+}
 
 const $ = id => document.getElementById(id);
 const baseSel = $('baseSel'), keyInput = $('keyInput');
@@ -706,6 +754,33 @@ function render(r){
 }
 
 // ---- 保存 ----
+
+async function downloadDocx(res, label){
+  const D=window.docx; if(!D){ alert('Word 组件未加载'); return; }
+  const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, Packer }=D;
+  const children=[];
+  for(const raw of res.paper.split('\n')){
+    const line=raw.replace(/\r$/,'');
+    if(!line.trim()){ children.push(new Paragraph({text:''})); continue; }
+    if(line.startsWith('# ')) children.push(new Paragraph({text:line.slice(2),heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,spacing:{after:240}}));
+    else if(line.startsWith('## ')) children.push(new Paragraph({text:line.slice(3),heading:HeadingLevel.HEADING_1,spacing:{before:240,after:120}}));
+    else if(line.startsWith('### ')) children.push(new Paragraph({text:line.slice(4),heading:HeadingLevel.HEADING_2,spacing:{before:180,after:100}}));
+    else if(line.startsWith('---')){}
+    else if(line.startsWith('**\u6458\u8981**')||line.startsWith('**\u5173\u952e\u8bcd**')){
+      const m=line.match(/\*\*(.+?)\*\*(.*)/);
+      children.push(new Paragraph({children:[new TextRun({text:m[1]+'\u3000',bold:true}),new TextRun(m[2].trim())],spacing:{after:120}}));
+    } else {
+      const runs=[]; let last=0,mm; const re=/\*\*(.+?)\*\*/g;
+      while((mm=re.exec(line))){ if(mm.index>last)runs.push(new TextRun(line.slice(last,mm.index))); runs.push(new TextRun({text:mm[1],bold:true})); last=re.lastIndex; }
+      if(last<line.length)runs.push(new TextRun(line.slice(last)));
+      children.push(new Paragraph({children:runs.length?runs:[new TextRun(line)],spacing:{after:120},alignment:AlignmentType.JUSTIFIED}));
+    }
+  }
+  const doc=new Document({styles:{default:{document:{run:{font:'\u5b8b\u4f53',size:24}}}},sections:[{properties:{page:{margin:{top:1440,bottom:1440,left:1440,right:1440}}},children}]});
+  const blob=await Packer.toBlob(doc);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`\u667a\u95ee\u8bba\u6587-${label}-${Date.now()}.docx`; a.click();
+}
+
 function download(name, text){
   const b=new Blob([text],{type:'text/markdown;charset=utf-8'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click();
@@ -730,12 +805,14 @@ document.querySelectorAll('[data-exp]').forEach(btn=>{
     btn.disabled=true; const old=btn.textContent; btn.textContent='扩写中…';
     openPaper('正在扩写：'+label, '正在生成约两万字论文，分四节写入，请稍候…\n\n');
     try{
-      const paper=await expandToPaper(base, refl, q, label, core, (ev)=>{
+      const res=await expandToPaper(base, refl, q, label, core, (ev)=>{
         if(ev.type==='expand') $('paperBody').textContent+='\n【'+ev.msg+'】\n';
       });
-      $('paperTitle').textContent=label+' · 扩写论文';
-      $('paperBody').textContent=paper;
-      $('paperSave').onclick=()=>download(`智问论文-${label}-${Date.now()}.md`, paper);
+      $('paperTitle').textContent=label+' · '+(res.title||'论文');
+      $('paperBody').textContent=res.paper;
+      $('paperMeta').textContent='约 '+res.paper.replace(/\s/g,'').length+' 字 · 含摘要/关键词/正文/参考文献';
+      $('paperSave').onclick=()=>downloadDocx(res, label);
+      $('paperSaveMd').onclick=()=>download(`智问论文-${label}-${Date.now()}.md`, res.paper);
     }catch(e){ $('paperBody').textContent='扩写出错：'+e.message; }
     btn.disabled=false; btn.textContent=old;
   };
