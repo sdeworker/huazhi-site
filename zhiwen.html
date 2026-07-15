@@ -139,6 +139,7 @@
         <option value="claude" disabled>Claude（需代理·暂未开放）</option>
         <option value="gemini" disabled>Gemini（需代理·暂未开放）</option>
       </select>
+      <select id="modelSel" style="min-width:220px"></select>
       <input id="keyInput" type="password" placeholder="粘贴该基底的 API Key">
     </div>
     <div class="hint">Key 保存在浏览器 localStorage，国产基底直连、境外基底经本站只转发不存储。切换基底会记住各自的 Key。</div>
@@ -655,7 +656,17 @@ let SDE_FULL = '', lastRun = null, lastReflection = '';
 
 async function loadSDE(){ if(SDE_FULL) return SDE_FULL;
   try{ SDE_FULL = await (await fetch('sde-ft.md')).text(); }catch(e){ SDE_FULL=''; } return SDE_FULL; }
-function syncKey(){ const b=BASES[baseSel.value]; keyInput.value=localStorage.getItem(b.keyName)||''; }
+function syncModels(){
+  const b=BASES[baseSel.value];
+  const saved=localStorage.getItem('sde_model_'+baseSel.value)||b.models[0].id;
+  document.getElementById('modelSel').innerHTML=b.models.map(m=>`<option value="${m.id}"${m.id===saved?' selected':''}>${m.label}</option>`).join('');
+  CURRENT_MODEL[baseSel.value]=saved;
+}
+document.getElementById('modelSel').onchange=function(){
+  CURRENT_MODEL[baseSel.value]=this.value;
+  localStorage.setItem('sde_model_'+baseSel.value, this.value);
+};
+function syncKey(){ const b=BASES[baseSel.value]; keyInput.value=localStorage.getItem(b.keyName)||''; syncModels(); }
 baseSel.onchange=syncKey; syncKey();
 keyInput.onchange=()=>{ const b=BASES[baseSel.value]; if(keyInput.value) localStorage.setItem(b.keyName,keyInput.value.trim()); };
 
@@ -695,7 +706,7 @@ $('goBtn').onclick = async ()=>{
 
   $('goBtn').disabled=true; $('results').style.display='none';
   $('console').style.display='block'; $('log').innerHTML='';
-  $('modelText').innerHTML='基底 <b>'+BASES[base].name+'</b> · '+BASES[base].model;
+  $('modelText').innerHTML='基底 <b>'+BASES[base].name+'</b> · '+(CURRENT_MODEL[base]||BASES[base].models[0].id);
   const flowState={}; renderFlow(flowState);
   logLine('开始 · 提智对照','hi');
 
