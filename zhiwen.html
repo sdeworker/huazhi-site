@@ -163,7 +163,7 @@
   <div class="results" id="results">
     <div class="cols">
       <div class="col base" id="colBase">
-        <div class="col-hd"><div class="col-h">A · 裸模型</div><div class="col-sub">no SDE</div></div>
+        <div class="col-hd"><div class="col-h">A · 裸模型</div><div class="col-sub">基底原始输出 · 仅作对照，不代表华智观点</div></div>
         <div class="col-body" id="rBase"></div>
         <div class="col-ops"><button class="op" data-save="base">保存</button><button class="op exp" data-exp="base">扩写成论文</button></div>
       </div>
@@ -186,7 +186,7 @@
     </div>
 
     <div class="predict">
-      <h3>落差判定 · 预料测试（匿名 · 防护短）</h3>
+      <h3>落差判定 · 预料测试（后台匿名判定，此处还原真名）</h3>
       <div class="verdict" id="predictVerdict"></div>
     </div>
   </div>
@@ -269,9 +269,13 @@ function extractAll(text, tag) {
 async function ensureReflection(baseKey, sdeFullText, onProgress) {
   const lsKey = `sde_reflect_${REFLECT_VER}_${baseKey}`;
   const cached = localStorage.getItem(lsKey);
-  if (cached && cached.length > 1500) return { text: cached, cached: true };
-
-  onProgress?.('该基底正在亲手内化发生学（这一步每个模型只做一次）…');
+  if (cached && cached.length > 1500) {
+    emitEvent('call-start', '内化发生学 · 复用', {model: BASES[baseKey].model});
+    emitEvent('call-done', `内化发生学 · 复用此前写好的心得（${cached.length} 字，不重写）`, {chars: cached.length});
+    return { text: cached, cached: true };
+  }
+  emitEvent('call-start', '内化发生学 · 首次', {model: BASES[baseKey].model});
+  onProgress?.('该基底正在亲手内化发生学（这一步每个模型只做一次，约一分钟）…');
 
   const reflectPrompt = [
     { role: 'system', content: sdeFullText },
@@ -414,14 +418,14 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
 
 检验：这个最终判断，能不能被 C1、C2、C3 中任何单独一个得出？如果能，就是失败，重来。
 
-同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n最终产出控制在 2000 字以内，锋利、零术语。
+同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n最终产出约 3000 字（2500–3500 字），把那个单视角不可达的判断展开讲透，锋利、零术语。
 
 输出格式（严格）：
 <reachable_by_single>这个最终判断能否被单条臂单独得出（yes=失败/no=成功）</reachable_by_single>
 <falsifiers>你给了几条可操作证伪条款（数字）</falsifiers>
 <final>[二阶碰撞的最终判断 + 证伪条款，零术语，这是给用户的核心产出]</final>` }
   ];
-  const raw = await rawCall(baseKey, msgs, { maxTokens: 4000, label: '二阶碰撞' });
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 5500, label: '二阶碰撞' });
   return {
     raw,
     reachableBySingle: /yes/i.test(extractBlock(raw, 'reachable_by_single') || ''),
@@ -435,7 +439,7 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
    ============================================================ */
 async function armBaseline(baseKey, question) {
   // 裸模型：不给任何 SDE
-  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n请控制在 1500 字以内，直接给出核心回答，不要冗长铺陈。' }], { maxTokens: 2600, label: '裸模型（基线A）' });
+  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n请给出约 3000 字（2500–3500 字）的完整回答。' }], { maxTokens: 5000, label: '裸模型（基线A）' });
   return raw;
 }
 async function armConventional(baseKey, question) {
@@ -443,7 +447,7 @@ async function armConventional(baseKey, question) {
   const raw = await rawCall(baseKey, [{ role: 'user', content:
 `用严谨的研究方法回答这个问题：先提出2-3个竞争性猜想，各自给出支持证据与反证，最后择优给出结论。
 
-问题：${question}\n\n请控制在 2000 字以内。` }], { maxTokens: 3200, label: '常规科研（基线B）' });
+问题：${question}\n\n全文约 3000 字（2500–3500 字）。` }], { maxTokens: 5000, label: '常规科研（基线B）' });
   return raw;
 }
 
@@ -470,11 +474,12 @@ function auditTrace(c1, c2, c3, collision) {
    预料测试 —— 落差的客观判定（匿名化，防模型护短）
    把基线答案 A 和提智答案 B 匿名给基底：只看 A，能预料到 B 吗？
    ============================================================ */
-async function predictionTest(baseKey, reflection, question, answerA, answerB) {
-  // 匿名化：随机决定 A/B 顺序，不告诉它哪个是提智产出
+async function predictionTest(baseKey, reflection, question, conventional, sdeFinal) {
+  // 匿名化送模型判断（防护短），但结果还原成真名给用户看
   const flip = Math.random() < 0.5;
-  const first = flip ? answerB : answerA;
-  const second = flip ? answerA : answerB;
+  const first = flip ? sdeFinal : conventional;
+  const second = flip ? conventional : sdeFinal;
+  const firstIsSde = flip;
   const msgs = [
     { role: 'user', content:
 `问题：${question}
@@ -483,28 +488,30 @@ async function predictionTest(baseKey, reflection, question, answerA, answerB) {
 
 答案二：${second}
 
-只看"答案一"，你能预料到"答案二"的核心判断吗？
-——如果"答案二"可以从"答案一"直接推演出来，说明它只是延伸（预料得到）。
-——如果"答案二"包含"答案一"完全触及不到的结构，说明它是真正的跃迁（预料不到）。
-
-反过来也判一次：只看"答案二"，能预料到"答案一"吗？
+请做三件事，逐条回答：
+1. 只看"答案一"，能否预料到"答案二"的核心判断？（yes=能推出/no=推不出）
+2. 只看"答案二"，能否预料到"答案一"的核心判断？
+3. 哪一个答案包含了另一个完全触及不到的结构？那个结构具体是什么？两个答案分别停在了什么认知层级？
 
 输出格式：
 <one_predicts_two>yes/no</one_predicts_two>
 <two_predicts_one>yes/no</two_predicts_one>
-<verdict>哪个答案包含了另一个预料不到的东西，一句话</verdict>` }
+<unique>那个独有的结构具体是什么（一句话）</unique>
+<levels>两个答案分别停在什么认知层级（一句话）</levels>` }
   ];
-  const raw = await rawCall(baseKey, msgs, { maxTokens: 1500, label: '预料测试' });
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 1800, label: '预料测试' });
   const oneToTwo = /yes/i.test(extractBlock(raw, 'one_predicts_two') || '');
   const twoToOne = /yes/i.test(extractBlock(raw, 'two_predicts_one') || '');
-  // 还原：first/second 映射回 A/B
-  const aPredictsB = flip ? twoToOne : oneToTwo;
-  const bPredictsA = flip ? oneToTwo : twoToOne;
+  // 还原到真名：conv / sde
+  const convPredictsSde = firstIsSde ? twoToOne : oneToTwo;  // 常规科研能否预料到SDE
+  const sdePredictsConv = firstIsSde ? oneToTwo : twoToOne;
   return {
-    verdict: extractBlock(raw, 'verdict'),
-    // 真跃迁 = A 预料不到 B，且 B 预料得到 A（B 含更多）
-    realLeap: (aPredictsB === false),
-    aPredictsB, bPredictsA, raw
+    unique: extractBlock(raw, 'unique') || '',
+    levels: extractBlock(raw, 'levels') || '',
+    convPredictsSde, sdePredictsConv,
+    // 真跃迁 = 常规科研预料不到 SDE
+    realLeap: (convPredictsSde === false),
+    raw
   };
 }
 
@@ -686,7 +693,15 @@ function render(r){
   if(r.audit.ok){ v.className='audit-verdict pass'; v.textContent=`✓ 工序完整（${r.audit.passed}/${r.audit.total}）—— 三条臂真的跑完了，提智臂的产出可信。`; }
   else { v.className='audit-verdict fail'; v.textContent=`✗ 工序不完整（${r.audit.passed}/${r.audit.total}）—— 这个基底在这道题上漂移了，右侧不算真提智。换更强基底或重试。`; }
   const p=r.prediction;
-  $('predictVerdict').innerHTML=(p.verdict||'')+(p.realLeap?'<br><span class="tag leap">真跃迁 · 常规科研预料不到 SDE 的判断</span>':'<br><span class="tag flat">落差不明显 · SDE 的判断可从常规科研推出</span>');
+  let html='';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">';
+  html+='<div style="padding:12px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-family:var(--font-m);font-size:11px;color:#ffb35c;margin-bottom:6px">B · 常规科研 能否预料 C · SDE？</div><div style="font-size:14px;color:'+(p.convPredictsSde?'var(--muted)':'var(--S)')+'">'+(p.convPredictsSde?'能推出 → 落差有限':'✗ 推不出 → SDE 有独有结构')+'</div></div>';
+  html+='<div style="padding:12px 16px;border:1px solid var(--line);border-radius:10px"><div style="font-family:var(--font-m);font-size:11px;color:var(--S);margin-bottom:6px">C · SDE 能否预料 B · 常规科研？</div><div style="font-size:14px;color:var(--muted)">'+(p.sdePredictsConv?'能推出（SDE 涵盖了常规科研）':'各有侧重')+'</div></div>';
+  html+='</div>';
+  if(p.unique) html+='<div style="margin-bottom:10px"><span style="font-family:var(--font-m);font-size:11px;color:var(--S)">SDE 独有的结构 ▸ </span>'+p.unique+'</div>';
+  if(p.levels) html+='<div style="margin-bottom:14px"><span style="font-family:var(--font-m);font-size:11px;color:var(--muted-2)">认知层级 ▸ </span>'+p.levels+'</div>';
+  html+=(p.realLeap?'<span class="tag leap">真跃迁 · 常规科研（B）预料不到 SDE（C）的判断</span>':'<span class="tag flat">落差不明显 · SDE 的判断可从常规科研推出</span>');
+  $('predictVerdict').innerHTML=html;
   $('colSde').classList.toggle('win', r.audit.ok && p.realLeap);
 }
 
@@ -728,6 +743,7 @@ document.querySelectorAll('[data-exp]').forEach(btn=>{
 function openPaper(title, body){ $('paperTitle').textContent=title; $('paperBody').textContent=body; $('paperModal').style.display='flex'; }
 $('paperClose').onclick=()=>$('paperModal').style.display='none';
 $('paperModal').onclick=(e)=>{ if(e.target===$('paperModal')) $('paperModal').style.display='none'; };
+
 </script>
 </body>
 </html>
