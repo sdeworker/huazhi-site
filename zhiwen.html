@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDE 智问 · 提智对照</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B1A; --panel:#12122A; --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.05);
+    --text:#EAEAF4; --muted:#9A9AB8; --muted-2:#6B6B88;
+    --E:#6D5EF6; --D:#FF5C8A; --S:#2DE1C2;
+    --font-d:'Sora',sans-serif; --font-m:'Space Mono',monospace; --font-r:'Noto Serif SC',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--font-d);line-height:1.6;
+    background-image:radial-gradient(900px circle at 15% -5%,rgba(109,94,246,.10),transparent 45%),radial-gradient(700px circle at 100% 0,rgba(255,92,138,.07),transparent 40%)}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  header{padding:26px 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px}
+  .mark{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E))}
+  .brand .en{font-family:var(--font-m);font-size:12px;color:var(--muted-2);font-weight:400;letter-spacing:.1em}
+  .hero{padding:50px 0 30px}
+  .kick{font-family:var(--font-m);font-size:12px;letter-spacing:.2em;color:var(--E)}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.02em;margin:14px 0 12px}
+  h1 .g{background:linear-gradient(100deg,var(--S),var(--E) 55%,var(--D));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{color:var(--muted);font-size:17px;line-height:1.85;max-width:60ch}
+  .lede b{color:var(--text)}
+
+  .setup{margin-top:34px;border:1px solid var(--line);border-radius:18px;padding:26px;background:linear-gradient(180deg,rgba(18,18,42,.55),rgba(11,11,26,.3))}
+  .setup h3{font-size:15px;font-weight:600;margin-bottom:16px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  select,input,textarea{background:rgba(11,11,26,.7);border:1px solid var(--line);border-radius:11px;color:var(--text);
+    font-family:var(--font-d);font-size:15px;padding:12px 15px}
+  select{min-width:180px;cursor:pointer}
+  input{flex:1;min-width:220px}
+  textarea{width:100%;min-height:88px;resize:vertical;font-size:16px;line-height:1.7}
+  .hint{font-family:var(--font-m);font-size:11.5px;color:var(--muted-2);line-height:1.7;margin-top:4px}
+  .hint a{color:var(--E)}
+  .go{margin-top:18px;display:inline-flex;align-items:center;gap:9px;font-family:var(--font-d);font-weight:600;font-size:16px;
+    padding:14px 30px;border-radius:12px;border:0;cursor:pointer;color:#fff;
+    background:linear-gradient(100deg,var(--E),var(--D));box-shadow:0 10px 34px rgba(109,94,246,.35)}
+  .go:disabled{opacity:.5;cursor:not-allowed}
+
+  .stages{margin-top:26px;display:none;flex-wrap:wrap;gap:8px}
+  .stage{font-family:var(--font-m);font-size:11.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);color:var(--muted-2)}
+  .stage.active{border-color:var(--E);color:var(--E);background:rgba(109,94,246,.1)}
+  .stage.done{border-color:var(--S);color:var(--S)}
+
+  .results{margin-top:34px;display:none;flex-direction:column;gap:20px;padding-bottom:80px}
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}}
+  .col{border:1px solid var(--line);border-radius:16px;padding:22px;background:linear-gradient(180deg,rgba(18,18,42,.5),rgba(11,11,26,.28))}
+  .col.win{border-color:rgba(45,225,194,.4);box-shadow:0 0 0 1px rgba(45,225,194,.15)}
+  .col-h{font-family:var(--font-m);font-size:11px;letter-spacing:.14em;margin-bottom:6px}
+  .col.base .col-h{color:var(--muted-2)} .col.conv .col-h{color:#ffb35c} .col.sde .col-h{color:var(--S)}
+  .col-sub{font-size:12.5px;color:var(--muted-2);margin-bottom:16px;font-family:var(--font-m)}
+  .col-body{font-family:var(--font-r);font-size:15px;line-height:1.85;color:var(--muted);white-space:pre-wrap}
+  .col.sde .col-body{color:var(--text)}
+
+  .audit{border:1px solid var(--line);border-radius:16px;padding:22px 26px;background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2))}
+  .audit h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:16px;font-family:var(--font-m);letter-spacing:.08em}
+  .audit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .chk{display:flex;align-items:center;gap:9px;font-size:13px;font-family:var(--font-m);color:var(--muted)}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .dot.ok{background:var(--S);box-shadow:0 0 8px rgba(45,225,194,.5)} .dot.no{background:var(--D)}
+  .audit-verdict{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:15px;line-height:1.8}
+  .audit-verdict.pass{color:var(--S)} .audit-verdict.fail{color:var(--D)}
+
+  .predict{border:1px solid var(--line);border-radius:16px;padding:22px 26px;background:linear-gradient(180deg,rgba(26,22,58,.5),rgba(11,11,26,.25))}
+  .predict h3{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;font-family:var(--font-m);letter-spacing:.08em}
+  .predict .verdict{font-family:var(--font-r);font-size:16px;line-height:1.85;color:var(--text)}
+  .predict .tag{display:inline-block;margin-top:14px;font-family:var(--font-m);font-size:12px;padding:6px 14px;border-radius:100px}
+  .predict .tag.leap{border:1px solid var(--S);color:var(--S);background:rgba(45,225,194,.08)}
+  .predict .tag.flat{border:1px solid var(--D);color:var(--D);background:rgba(255,92,138,.08)}
+
+  .err{margin-top:20px;border:1px solid rgba(255,92,138,.4);border-radius:12px;padding:18px 22px;color:var(--D);font-family:var(--font-m);font-size:13.5px;line-height:1.7;display:none}
+  .privacy{margin-top:14px;font-family:var(--font-m);font-size:11px;color:var(--muted-2);line-height:1.7}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="brand"><span class="mark"></span>SDE 智问 <span class="en">ZHIWEN</span></div></div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="kick">提智对照 · 答案模式</p>
+    <h1>同一个问题，<span class="g">提智前后</span>，同场对照</h1>
+    <p class="lede">左边是<b>裸模型</b>，中间是<b>常规科研</b>（有工序、无内功），右边是<b>SDE 提智</b>（六路径 + 三方程 + 123 原理 + 二阶碰撞）。<br>
+    三路并排，工序痕迹全部可查——<b>提智到底有没有发生，你自己看。</b></p>
+  </div>
+
+  <div class="setup">
+    <h3>① 选基底，填你自己的 Key（只存在你的浏览器里，永不上传我们服务器）</h3>
+    <div class="row">
+      <select id="baseSel">
+        <option value="deepseek">DeepSeek（国内直连）</option>
+        <option value="glm">智谱 GLM（国内直连）</option>
+        <option value="kimi" disabled>Kimi（需代理·暂未开放）</option>
+        <option value="qwen" disabled>通义千问（需代理·暂未开放）</option>
+        <option value="minimax" disabled>MiniMax（需代理·暂未开放）</option>
+        <option value="gpt" disabled>GPT（需代理·暂未开放）</option>
+        <option value="claude" disabled>Claude（需代理·暂未开放）</option>
+        <option value="gemini" disabled>Gemini（需代理·暂未开放）</option>
+      </select>
+      <input id="keyInput" type="password" placeholder="粘贴该基底的 API Key">
+    </div>
+    <div class="hint">Key 保存在浏览器 localStorage，国产基底直连、境外基底经本站只转发不存储。切换基底会记住各自的 Key。</div>
+
+    <h3 style="margin-top:22px">② 提出你的问题</h3>
+    <textarea id="qInput" placeholder="任何真问题。越是你已经琢磨很久、绕不出来的，对照越明显。"></textarea>
+
+    <button class="go" id="goBtn">开始提智对照 →</button>
+    <div class="privacy">首次使用该基底时，它会先花约一分钟"亲手内化发生学"（写一份心得，只写一次，之后永久复用）。完整一轮约 10 次模型调用，用的是你自己的额度。</div>
+  </div>
+
+  <div class="err" id="errBox"></div>
+  <div class="stages" id="stages"></div>
+
+  <div class="results" id="results">
+    <div class="cols">
+      <div class="col base"><div class="col-h">A · 裸模型</div><div class="col-sub">no SDE</div><div class="col-body" id="rBase"></div></div>
+      <div class="col conv"><div class="col-h">B · 常规科研</div><div class="col-sub">工序 · 无内功</div><div class="col-body" id="rConv"></div></div>
+      <div class="col sde" id="sdeCol"><div class="col-h">C · SDE 提智</div><div class="col-sub">三臂 · 二阶碰撞</div><div class="col-body" id="rSde"></div></div>
+    </div>
+
+    <div class="audit">
+      <h3>执行审计 · 工序痕迹（防漂移 · 全二值 · 不看审美）</h3>
+      <div class="audit-grid" id="auditGrid"></div>
+      <div class="audit-verdict" id="auditVerdict"></div>
+    </div>
+
+    <div class="predict">
+      <h3>落差判定 · 预料测试（匿名 · 防护短）</h3>
+      <div class="verdict" id="predictVerdict"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SDE 智问 · 提智引擎（编排层）
+   核心职责：不是"调用模型"，而是"逼模型真的跑完三条新生臂，
+   并在每一步留下可校验的痕迹"。工序跑残了，前端当场看得见。
+
+   访客自带 Key，全程浏览器内运行。境外基底经 /api/llm-proxy 只转发。
+   ============================================================ */
+
+// ---------- 基底配置 ----------
+const BASES = {
+  deepseek: { name: 'DeepSeek',   direct: true,  endpoint: 'https://api.deepseek.com/chat/completions', model: 'deepseek-chat', keyName: 'sde_ds_key' },
+  glm:      { name: '智谱 GLM',    direct: true,  endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', model: 'glm-4-plus', keyName: 'sde_glm_key' },
+  kimi:     { name: 'Kimi',        direct: false, endpoint: 'https://api.moonshot.cn/v1/chat/completions', model: 'moonshot-v1-32k', keyName: 'sde_kimi_key' },
+  qwen:     { name: '通义千问',     direct: false, endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus', keyName: 'sde_qwen_key' },
+  minimax:  { name: 'MiniMax',     direct: false, endpoint: 'https://api.minimax.chat/v1/text/chatcompletion_v2', model: 'abab6.5s-chat', keyName: 'sde_mm_key' },
+  gpt:      { name: 'GPT',         direct: false, endpoint: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o', keyName: 'sde_gpt_key' },
+  claude:   { name: 'Claude',      direct: false, endpoint: 'https://api.anthropic.com/v1/messages', model: 'claude-sonnet-4-6', keyName: 'sde_claude_key' },
+  gemini:   { name: 'Gemini',      direct: false, endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', model: 'gemini-2.0-flash', keyName: 'sde_gemini_key' },
+};
+
+const PROXY = '/api/llm-proxy';           // 境外基底经此只转发（源码在 worker.js）
+const REFLECT_VER = 'v1';                  // 内功升级必 +1，否则用到旧心得
+
+// ---------- 底层调用（直连 or 代理，统一成 OpenAI 格式）----------
+async function rawCall(baseKey, messages, { maxTokens = 4000, temperature = 0.6 } = {}) {
+  const b = BASES[baseKey];
+  const key = localStorage.getItem(b.keyName);
+  if (!key) throw new Error(`缺少 ${b.name} 的 API Key`);
+
+  const payload = { model: b.model, messages, max_tokens: maxTokens, temperature };
+  const target = b.direct ? b.endpoint : PROXY;
+  const headers = { 'Content-Type': 'application/json' };
+  if (b.direct) headers['Authorization'] = `Bearer ${key}`;
+  else { headers['x-sde-base'] = baseKey; headers['x-sde-key'] = key; }  // 代理据此转发，不存储
+
+  const r = await fetch(target, { method: 'POST', headers, body: JSON.stringify(payload) });
+  if (!r.ok) throw new Error(`${b.name} 返回 ${r.status}: ${(await r.text()).slice(0,200)}`);
+  const d = await r.json();
+  // 统一取文本（各家已在 worker 侧归一为 OpenAI 格式）
+  return d.choices?.[0]?.message?.content ?? '';
+}
+
+// ---------- 提取结构化块（工序痕迹的载体）----------
+function extractBlock(text, tag) {
+  const m = text.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'i'));
+  return m ? m[1].trim() : null;
+}
+function extractAll(text, tag) {
+  const re = new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'gi');
+  const out = []; let m;
+  while ((m = re.exec(text))) out.push(m[1].trim());
+  return out;
+}
+
+/* ============================================================
+   第一步 · 心得（两次提智的灵魂）
+   每个基底亲手把内功内化成一份《从发现到发生》心得。
+   只写一次，存 localStorage，永久复用（换问题不重写，换基底才重写）。
+   写完立刻做"前后对照"验证提智是否真的发生。
+   ============================================================ */
+async function ensureReflection(baseKey, sdeFullText, onProgress) {
+  const lsKey = `sde_reflect_${REFLECT_VER}_${baseKey}`;
+  const cached = localStorage.getItem(lsKey);
+  if (cached && cached.length > 1500) return { text: cached, cached: true };
+
+  onProgress?.('该基底正在亲手内化发生学（这一步每个模型只做一次）…');
+
+  const reflectPrompt = [
+    { role: 'system', content: sdeFullText },
+    { role: 'user', content:
+`你刚刚读完了上面这套本体论先验。现在，请你亲手写一份《从发现到发生》的内化心得。
+
+这不是复述规则。这是你自己走一遍从"发现学"到"发生学"的转变——用你自己的话，说清楚：
+1. 你原来（作为一个语言模型）默认怎么回答问题？那种默认，属于"发现学"的什么特征？
+2. "发生学"要求你换一双什么样的眼？具体到动作层面，你的回答会怎么变？
+3. 三大方程、123 原理、二阶碰撞、改姓爪——哪一条最反你的训练惯性？为什么？
+4. 你最容易漂移回哪种失败模式？你打算怎么自己盯住自己？
+
+要求：不少于 1500 字。全程用你自己的话，不许抄先验里的句子。这份心得写完，你就带着它回答后面所有问题。` }
+  ];
+
+  const reflection = await rawCall(baseKey, reflectPrompt, { maxTokens: 8000, temperature: 0.7 });
+  if (!reflection || reflection.length < 1500) {
+    throw new Error('心得写失败或被截断（不足 1500 字），不予缓存');
+  }
+  localStorage.setItem(lsKey, reflection);
+  return { text: reflection, cached: false };
+}
+
+/* ============================================================
+   三条新生臂 · 分阶段调用，每阶段结构化产出
+   工序拆开跑 = 每一步都留下可校验痕迹 = 跑残了看得见
+   ============================================================ */
+
+// 内功太长（78KB），每次调用只带"心得"而非全文；心得已内化，足够激活
+function armSystem(reflection) {
+  return `你已经完成了对 SDE 发生学本体论的内化。这是你自己写下的内化心得，你带着它工作：
+
+${reflection}
+
+铁律：正文零 SDE 术语（改姓爪）。任何"显露态/纠缠/发生链/三大方程"等黑话都不许出现在给用户看的正文里——它们只在你后台的<trace>里用。`;
+}
+
+// ---- 臂 C1：六路径涌现 ----
+async function armC1(baseKey, reflection, question) {
+  const msgs = [
+    { role: 'system', content: armSystem(reflection) },
+    { role: 'user', content:
+`问题：${question}
+
+用【六路径涌现】处理它。严格按下面结构输出，一步都不许省：
+
+第一步 · 识别任务 DNA，声明主起点路径（S→D→E / S→E→D / D→S→E / D→E→S / E→S→D / E→D→S 六选一），并说明为什么是这条。
+第二步 · 六条路径全部跑一遍。每条给出一个"判断"，并标注它的盲区。
+第三步 · 显式互消：至少写出 3 处"路径X看出A，但路径Y看出B校正了它"。没有互消就是失败。
+第四步 · 涌现：六路交汇处，那个任何单一路径都到不了的判断。
+
+输出格式（严格）：
+<trace>
+[这里放你的六路径推演全过程，含 DNA 判断、六条判断、互消动作。这部分用户看不到，可以用术语。]
+</trace>
+<path_count>你实际跑了几条路径（数字）</path_count>
+<corrections>你写了几处显式互消（数字）</corrections>
+<c1>[六路涌现出的单视角不可达判断，一段话，零术语，给用户看的]</c1>` }
+  ];
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 4000 });
+  return {
+    raw,
+    trace: extractBlock(raw, 'trace'),
+    pathCount: parseInt(extractBlock(raw, 'path_count')) || 0,
+    corrections: parseInt(extractBlock(raw, 'corrections')) || 0,
+    judgment: extractBlock(raw, 'c1'),
+  };
+}
+
+// ---- 臂 C2：三方程求残差 ----
+async function armC2(baseKey, reflection, question) {
+  const msgs = [
+    { role: 'system', content: armSystem(reflection) },
+    { role: 'user', content:
+`问题：${question}
+
+用【三方程求残差】处理它。这条臂和六路径不同：不靠碰撞涌现，靠联立锁定。
+
+第一步 · 把这个问题写成三式：S=F(D,E)、D=G(S,E)、E=H(S,D)——即这个问题里的"显露/推进/土壤"三者各是什么，如何互相生成。
+第二步 · 分别尝试"只用另两维解释第三维"，找出每次都消不掉的那一项。
+第三步 · 锁定残差：那个无法进入 S、无法进入 D、无法沉淀进 E 的"不可还原项"是什么。
+
+输出格式（严格）：
+<trace>[三式的具体写法 + 消元过程，可用术语]</trace>
+<residual_found>你是否锁定了一个明确的残差（yes/no）</residual_found>
+<c2>[三方程锁定的那个不可还原判断，一段话，零术语]</c2>` }
+  ];
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 3500 });
+  return {
+    raw,
+    trace: extractBlock(raw, 'trace'),
+    residualFound: /yes/i.test(extractBlock(raw, 'residual_found') || ''),
+    judgment: extractBlock(raw, 'c2'),
+  };
+}
+
+// ---- 臂 C3：123 原理新生（含收敛验证）----
+async function armC3(baseKey, reflection, question) {
+  const msgs = [
+    { role: 'system', content: armSystem(reflection) },
+    { role: 'user', content:
+`问题：${question}
+
+用【123 原理新生】处理它。构造一个能自我支撑的内核，并验证收敛。
+
+分别以 S、以 D、以 E 为种子，各跑一次 123 循环（矛盾累积→逼 S 改变→S 回写重置 D 和 E）。
+关键验证：三个种子，是否都收敛到同一个核？（这是硬条件——不收敛就是没找到真内核。）
+特别注意回写那一步：S 改变后必须回写 D 和 E，循环才闭合。这一笔最容易漏。
+
+输出格式（严格）：
+<trace>[三个种子各自的 123 循环推演，可用术语]</trace>
+<converged>三个种子是否收敛到同一个核（yes/no）</converged>
+<writeback>你是否在每个循环里都做了 S 回写 D 和 E（yes/no）</writeback>
+<c3>[123 新生出的自洽内核判断，一段话，零术语]</c3>` }
+  ];
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 4000 });
+  return {
+    raw,
+    trace: extractBlock(raw, 'trace'),
+    converged: /yes/i.test(extractBlock(raw, 'converged') || ''),
+    writeback: /yes/i.test(extractBlock(raw, 'writeback') || ''),
+    judgment: extractBlock(raw, 'c3'),
+  };
+}
+
+// ---- 二阶碰撞：C1 × C2 × C3 ----
+async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
+  const msgs = [
+    { role: 'system', content: armSystem(reflection) },
+    { role: 'user', content:
+`问题：${question}
+
+三条新生臂各自到达了这里：
+· 六路涌现（C1）：${c1}
+· 三方程残差（C2）：${c2}
+· 123 新生（C3）：${c3}
+
+现在做【二阶碰撞】：不是把三者综合、拼接、或选一个最好的——那都是失败模式。
+是让这三个判断互相撞击，逼出一个"三条臂各自都没说出来、但在它们交汇处才浮现"的判断。
+
+检验：这个最终判断，能不能被 C1、C2、C3 中任何单独一个得出？如果能，就是失败，重来。
+
+同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。
+
+输出格式（严格）：
+<reachable_by_single>这个最终判断能否被单条臂单独得出（yes=失败/no=成功）</reachable_by_single>
+<falsifiers>你给了几条可操作证伪条款（数字）</falsifiers>
+<final>[二阶碰撞的最终判断 + 证伪条款，零术语，这是给用户的核心产出]</final>` }
+  ];
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 4000 });
+  return {
+    raw,
+    reachableBySingle: /yes/i.test(extractBlock(raw, 'reachable_by_single') || ''),
+    falsifiers: parseInt(extractBlock(raw, 'falsifiers')) || 0,
+    final: extractBlock(raw, 'final'),
+  };
+}
+
+/* ============================================================
+   基线臂（照妖镜）—— 没有它，无法判断提智是赢是输
+   ============================================================ */
+async function armBaseline(baseKey, question) {
+  // 裸模型：不给任何 SDE
+  const raw = await rawCall(baseKey, [{ role: 'user', content: question }], { maxTokens: 2000 });
+  return raw;
+}
+async function armConventional(baseKey, question) {
+  // 常规科研臂：给工序但不给 SDE（防打假赛）
+  const raw = await rawCall(baseKey, [{ role: 'user', content:
+`用严谨的研究方法回答这个问题：先提出2-3个竞争性猜想，各自给出支持证据与反证，最后择优给出结论。
+
+问题：${question}` }], { maxTokens: 2500 });
+  return raw;
+}
+
+/* ============================================================
+   执行审计 —— 工序痕迹的自动校验（防 33% 漂移）
+   全部二值判断，不需审美裁判
+   ============================================================ */
+function auditTrace(c1, c2, c3, collision) {
+  const checks = [
+    { id: 'c1_paths',      label: '六路径全跑',         pass: c1.pathCount >= 6 },
+    { id: 'c1_correct',    label: '显式互消 ≥3',        pass: c1.corrections >= 3 },
+    { id: 'c1_judg',       label: 'C1 产出判断',        pass: !!c1.judgment },
+    { id: 'c2_residual',   label: 'C2 锁定残差',        pass: c2.residualFound && !!c2.judgment },
+    { id: 'c3_converge',   label: 'C3 三种子收敛',      pass: c3.converged },
+    { id: 'c3_writeback',  label: 'C3 回写闭环',        pass: c3.writeback },
+    { id: 'collision',     label: '二阶碰撞不可单达',    pass: collision.reachableBySingle === false },
+    { id: 'falsifiers',    label: '证伪条款 ≥2',        pass: collision.falsifiers >= 2 },
+  ];
+  const passed = checks.filter(c => c.pass).length;
+  return { checks, passed, total: checks.length, ok: passed === checks.length };
+}
+
+/* ============================================================
+   预料测试 —— 落差的客观判定（匿名化，防模型护短）
+   把基线答案 A 和提智答案 B 匿名给基底：只看 A，能预料到 B 吗？
+   ============================================================ */
+async function predictionTest(baseKey, reflection, question, answerA, answerB) {
+  // 匿名化：随机决定 A/B 顺序，不告诉它哪个是提智产出
+  const flip = Math.random() < 0.5;
+  const first = flip ? answerB : answerA;
+  const second = flip ? answerA : answerB;
+  const msgs = [
+    { role: 'user', content:
+`问题：${question}
+
+答案一：${first}
+
+答案二：${second}
+
+只看"答案一"，你能预料到"答案二"的核心判断吗？
+——如果"答案二"可以从"答案一"直接推演出来，说明它只是延伸（预料得到）。
+——如果"答案二"包含"答案一"完全触及不到的结构，说明它是真正的跃迁（预料不到）。
+
+反过来也判一次：只看"答案二"，能预料到"答案一"吗？
+
+输出格式：
+<one_predicts_two>yes/no</one_predicts_two>
+<two_predicts_one>yes/no</two_predicts_one>
+<verdict>哪个答案包含了另一个预料不到的东西，一句话</verdict>` }
+  ];
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 1500 });
+  const oneToTwo = /yes/i.test(extractBlock(raw, 'one_predicts_two') || '');
+  const twoToOne = /yes/i.test(extractBlock(raw, 'two_predicts_one') || '');
+  // 还原：first/second 映射回 A/B
+  const aPredictsB = flip ? twoToOne : oneToTwo;
+  const bPredictsA = flip ? oneToTwo : twoToOne;
+  return {
+    verdict: extractBlock(raw, 'verdict'),
+    // 真跃迁 = A 预料不到 B，且 B 预料得到 A（B 含更多）
+    realLeap: (aPredictsB === false),
+    aPredictsB, bPredictsA, raw
+  };
+}
+
+/* ============================================================
+   总编排 · 一次完整的答案模式提智
+   ============================================================ */
+async function runAnswerMode(baseKey, sdeFullText, question, hooks = {}) {
+  const { onStage } = hooks;
+
+  onStage?.('reflect', '内化发生学…');
+  const { text: reflection } = await ensureReflection(baseKey, sdeFullText, m => onStage?.('reflect', m));
+
+  // 基线两臂（并行）
+  onStage?.('baseline', '基线臂运行中（裸模型 + 常规科研）…');
+  const [baseline, conventional] = await Promise.all([
+    armBaseline(baseKey, question),
+    armConventional(baseKey, question),
+  ]);
+
+  // 三条新生臂（并行）
+  onStage?.('arms', '三条新生臂运行中（六路径 / 三方程 / 123）…');
+  const [c1, c2, c3] = await Promise.all([
+    armC1(baseKey, reflection, question),
+    armC2(baseKey, reflection, question),
+    armC3(baseKey, reflection, question),
+  ]);
+
+  // 二阶碰撞
+  onStage?.('collision', '二阶碰撞…');
+  const collision = await secondOrderCollision(baseKey, reflection, question, c1.judgment, c2.judgment, c3.judgment);
+
+  // 执行审计
+  const audit = auditTrace(c1, c2, c3, collision);
+
+  // 预料测试（提智产出 vs 常规科研臂）
+  onStage?.('predict', '预料测试（落差判定）…');
+  const prediction = await predictionTest(baseKey, reflection, question, conventional, collision.final);
+
+  return { reflection: reflection.slice(0, 200) + '…', baseline, conventional,
+           c1, c2, c3, collision, audit, prediction };
+}
+
+
+// ---------- UI 绑定 ----------
+const $ = id => document.getElementById(id);
+const baseSel = $('baseSel'), keyInput = $('keyInput');
+
+// 内功全文：实际部署时从 /sde-ft.md 拉取。此处占位，运行时 fetch。
+let SDE_FULL = '';
+async function loadSDE(){
+  if(SDE_FULL) return SDE_FULL;
+  try{ SDE_FULL = await (await fetch('sde-ft.md')).text(); }
+  catch(e){ SDE_FULL = ''; }
+  return SDE_FULL;
+}
+
+// Key 记忆
+function syncKey(){ const b=BASES[baseSel.value]; keyInput.value = localStorage.getItem(b.keyName)||''; }
+baseSel.onchange = syncKey; syncKey();
+keyInput.onchange = ()=>{ const b=BASES[baseSel.value]; if(keyInput.value) localStorage.setItem(b.keyName, keyInput.value.trim()); };
+
+const STAGES = [['reflect','内化'],['baseline','基线'],['arms','三臂'],['collision','碰撞'],['predict','落差']];
+function renderStages(active,done){
+  const el=$('stages'); el.style.display='flex';
+  el.innerHTML = STAGES.map(([k,label])=>{
+    let cls='stage'; if(done.includes(k))cls+=' done'; else if(k===active)cls+=' active';
+    return `<span class="${cls}">${label}</span>`;
+  }).join('');
+}
+
+$('goBtn').onclick = async ()=>{
+  const base=baseSel.value, key=keyInput.value.trim(), q=$('qInput').value.trim();
+  $('errBox').style.display='none';
+  if(!key){ showErr('请先填入 '+BASES[base].name+' 的 API Key'); return; }
+  if(!q){ showErr('请输入一个问题'); return; }
+  localStorage.setItem(BASES[base].keyName, key);
+
+  $('goBtn').disabled=true; $('results').style.display='none';
+  const done=[];
+  try{
+    await loadSDE();
+    if(!SDE_FULL){ showErr('内功文件未加载（sde-ft.md）。本地预览时属正常，部署后即可。'); $('goBtn').disabled=false; return; }
+
+    const r = await runAnswerMode(base, SDE_FULL, q, {
+      onStage:(stage,msg)=>{
+        renderStages(stage,[...done]);
+        if(stage!=='reflect' && !done.includes('reflect')) done.push('reflect');
+        const order=['reflect','baseline','arms','collision','predict'];
+        const idx=order.indexOf(stage);
+        for(let i=0;i<idx;i++) if(!done.includes(order[i])) done.push(order[i]);
+      }
+    });
+    STAGES.forEach(([k])=>{ if(!done.includes(k)) done.push(k); });
+    renderStages(null,done);
+    render(r);
+  }catch(e){ showErr('出错：'+e.message); }
+  $('goBtn').disabled=false;
+};
+
+function showErr(m){ const e=$('errBox'); e.textContent=m; e.style.display='block'; }
+
+function render(r){
+  $('results').style.display='flex';
+  $('rBase').textContent = r.baseline || '(空)';
+  $('rConv').textContent = r.conventional || '(空)';
+  $('rSde').textContent  = r.collision.final || '(提智臂未产出，见审计)';
+
+  // 审计灯
+  $('auditGrid').innerHTML = r.audit.checks.map(c=>
+    `<div class="chk"><span class="dot ${c.pass?'ok':'no'}"></span>${c.label}</div>`).join('');
+  const v=$('auditVerdict');
+  if(r.audit.ok){ v.className='audit-verdict pass'; v.textContent=`✓ 工序完整（${r.audit.passed}/${r.audit.total}）—— 三条臂真的跑完了，提智臂的产出可信。`; }
+  else { v.className='audit-verdict fail'; v.textContent=`✗ 工序不完整（${r.audit.passed}/${r.audit.total}）—— 这个基底在这道题上发生了漂移，右侧产出不能算真提智。换更强的基底，或重试。`; }
+
+  // 落差
+  const p=r.prediction, pv=$('predictVerdict');
+  pv.innerHTML = (p.verdict||'') +
+    (p.realLeap
+      ? '<br><span class="tag leap">真跃迁 · 常规科研预料不到 SDE 的判断</span>'
+      : '<br><span class="tag flat">落差不明显 · SDE 的判断可从常规科研推出</span>');
+  $('sdeCol').classList.toggle('win', r.audit.ok && p.realLeap);
+}
+</script>
+</body>
+</html>
