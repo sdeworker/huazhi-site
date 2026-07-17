@@ -36,6 +36,17 @@
     color:var(--muted);font-size:15px;line-height:1.7;padding-left:22px;position:relative;
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
+
+  .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
+  .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
+  .ref::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:#3FA0A0;opacity:.4;transition:opacity .3s}
+  .ref:hover{border-color:color-mix(in srgb,#3FA0A0 45%,transparent);transform:translateY(-2px)}
+  .ref:hover::before{opacity:1}
+  .ref-t{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.5;color:var(--text);margin-bottom:9px}
+  .ref-d{font-size:13.3px;line-height:1.7;color:var(--muted);margin-bottom:13px}
+  .ref-go{font-family:var(--font-mono);font-size:11px;color:#3FA0A0;display:inline-flex;gap:6px;transition:gap .25s}
+  .ref:hover .ref-go{gap:11px}
 </style>
 </head>
 <body>
@@ -121,6 +132,30 @@
         <li>情报分析：把散乱数据收敛成打法</li>
         <li>桌面级深度定制，把 SDE 引擎装进可交付的工具里</li>
       </ul>
+    </div>
+
+
+    <div class="list-head" style="margin-top:70px">
+      <h2>延伸阅读</h2>
+      <span class="cnt">SDE 发生学 · 母站深度长文</span>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.8;max-width:60ch;margin:-4px 0 4px">以下文章出自 SDE 学派主站，从发生学角度深入剖析本领域的具体问题——它们是这套方法论已经走通的实证。</p>
+    <div class="refs-grid">
+        <a class="ref" href="https://sdeuniverses.com/column/sde-agent-second-revolution/" target="_blank" rel="noopener">
+          <div class="ref-t">AI的第二次革命：从语言模型到发生世界模型 · SDE智能体导论</div>
+          <div class="ref-d">王德生《SDE智能体导论》核心判断导读：智能体的高阶使命不是完成任务，而是发生新世界。兼论Sora、Genie、Cosmos、V-JEPA、World La…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/from-it-to-me/" target="_blank" rel="noopener">
+          <div class="ref-t">感应式：AI 时代创作贡献的重心，从“我-它”到“它-我”</div>
+          <div class="ref-d">感应式：AI 时代创作贡献的重心，从“我-它”到“它-我”——王德生 · AI创作论四部曲之一 · 德麦国际</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/the-weight-of-the-signature/" target="_blank" rel="noopener">
+          <div class="ref-t">签名的重量：论AI时代作者身份的伦理重构</div>
+          <div class="ref-d">签名的重量：论AI时代作者身份的伦理重构——王德生 · AI创作论四部曲之三 · 德麦国际</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
     </div>
 
     <div style="margin-top:64px;border:1px solid var(--line);border-radius:20px;padding:38px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.45),rgba(11,11,26,.22))">

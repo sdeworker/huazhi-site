@@ -36,6 +36,17 @@
     color:var(--muted);font-size:15px;line-height:1.7;padding-left:22px;position:relative;
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
+
+  .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
+  .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
+  .ref::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:#5FA84A;opacity:.4;transition:opacity .3s}
+  .ref:hover{border-color:color-mix(in srgb,#5FA84A 45%,transparent);transform:translateY(-2px)}
+  .ref:hover::before{opacity:1}
+  .ref-t{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.5;color:var(--text);margin-bottom:9px}
+  .ref-d{font-size:13.3px;line-height:1.7;color:var(--muted);margin-bottom:13px}
+  .ref-go{font-family:var(--font-mono);font-size:11px;color:#5FA84A;display:inline-flex;gap:6px;transition:gap .25s}
+  .ref:hover .ref-go{gap:11px}
 </style>
 </head>
 <body>
@@ -121,6 +132,35 @@
         <li>情绪—饮食—运动—睡眠的整体回路</li>
         <li>长寿策略：Sirtuins-AMPK-mTOR 三角干预</li>
       </ul>
+    </div>
+
+
+    <div class="list-head" style="margin-top:70px">
+      <h2>延伸阅读</h2>
+      <span class="cnt">SDE 发生学 · 母站深度长文</span>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.8;max-width:60ch;margin:-4px 0 4px">以下文章出自 SDE 学派主站，从发生学角度深入剖析本领域的具体问题——它们是这套方法论已经走通的实证。</p>
+    <div class="refs-grid">
+        <a class="ref" href="https://sdeuniverses.com/column/thyroid-spinning/" target="_blank" rel="noopener">
+          <div class="ref-t">空转的甲状腺——一个器官如何＂忘了自己是谁＂</div>
+          <div class="ref-d">甲状腺结节,西医要切、中医要调,可为什么切了会复发、调了会反复?因为病根不在甲状腺这个器官,而在它所处的整个互动网络熄了火。病,不是器官坏了,是互动熄火了。…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/chronic-inflammation/" target="_blank" rel="noopener">
+          <div class="ref-t">慢性炎症:身体为什么向自己开火?</div>
+          <div class="ref-d">炎症本是身体最忠诚的卫兵——红肿热痛,是它在灭火救灾。可当这支救火队从'来了就走'变成'常驻不撤',它就从救你的力量,变成了慢慢磨损你的力量。慢性炎症不是敌…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/gut-brain/" target="_blank" rel="noopener">
+          <div class="ref-t">肠道与情绪:第二个大脑在替你做决定?</div>
+          <div class="ref-d">我们以为'我'住在大脑里,是纯粹的精神主体。可肚子里那片庞大的、看不见的生态,却在持续影响你的情绪、食欲甚至选择。紧张会拉肚子,悲伤会没胃口——这条通道不只…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/insomnia/" target="_blank" rel="noopener">
+          <div class="ref-t">失眠:为什么越想睡越睡不着?</div>
+          <div class="ref-d">失眠最折磨人的地方在于:你越努力,越失败。因为睡眠是一件'越用力越远'的事——它属于必须松手才能到达的那类事物。这篇文章解释:为什么意志一介入,睡眠就锁死;…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
     </div>
 
     <div style="margin-top:64px;border:1px solid var(--line);border-radius:20px;padding:38px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.45),rgba(11,11,26,.22))">

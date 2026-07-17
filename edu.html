@@ -36,6 +36,17 @@
     color:var(--muted);font-size:15px;line-height:1.7;padding-left:22px;position:relative;
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
+
+  .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
+  .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
+  .ref::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--S);opacity:.4;transition:opacity .3s}
+  .ref:hover{border-color:color-mix(in srgb,var(--S) 45%,transparent);transform:translateY(-2px)}
+  .ref:hover::before{opacity:1}
+  .ref-t{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.5;color:var(--text);margin-bottom:9px}
+  .ref-d{font-size:13.3px;line-height:1.7;color:var(--muted);margin-bottom:13px}
+  .ref-go{font-family:var(--font-mono);font-size:11px;color:var(--S);display:inline-flex;gap:6px;transition:gap .25s}
+  .ref:hover .ref-go{gap:11px}
 </style>
 </head>
 <body>
@@ -121,6 +132,35 @@
         <li>教材的发生顺序重写</li>
         <li>学习动机的重建</li>
       </ul>
+    </div>
+
+
+    <div class="list-head" style="margin-top:70px">
+      <h2>延伸阅读</h2>
+      <span class="cnt">SDE 发生学 · 母站深度长文</span>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.8;max-width:60ch;margin:-4px 0 4px">以下文章出自 SDE 学派主站，从发生学角度深入剖析本领域的具体问题——它们是这套方法论已经走通的实证。</p>
+    <div class="refs-grid">
+        <a class="ref" href="https://sdeuniverses.com/column/gifted-child/" target="_blank" rel="noopener">
+          <div class="ref-t">天才儿童,为何泯然众人?</div>
+          <div class="ref-d">天才儿童,为何泯然众人?</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/why-high-scores-low-creativity/" target="_blank" rel="noopener">
+          <div class="ref-t">高分为什么低创</div>
+          <div class="ref-d">压制创造力的，不是某个坏老师， 是一张在课堂内部织起来的隐形网。 它有八根线，根根都合情合理。</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/classroom-kills-meaning/" target="_blank" rel="noopener">
+          <div class="ref-t">课堂，正在批量销毁意义</div>
+          <div class="ref-d">压抑差异，切断互动，用分数伪造意义—— 孩子不是不聪明， 他们是被排除在意义生成之外的断裂者。</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/language-not-learned/" target="_blank" rel="noopener">
+          <div class="ref-t">语言不是学来的，是长出来的</div>
+          <div class="ref-d">孩子在学会模仿之前， 就能分辨语调里的情绪。 语言不是被学得的，而是被生成的。</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
     </div>
 
     <div style="margin-top:64px;border:1px solid var(--line);border-radius:20px;padding:38px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.45),rgba(11,11,26,.22))">

@@ -36,6 +36,17 @@
     color:var(--muted);font-size:15px;line-height:1.7;padding-left:22px;position:relative;
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
+
+  .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
+  .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
+  .ref::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--E);opacity:.4;transition:opacity .3s}
+  .ref:hover{border-color:color-mix(in srgb,var(--E) 45%,transparent);transform:translateY(-2px)}
+  .ref:hover::before{opacity:1}
+  .ref-t{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.5;color:var(--text);margin-bottom:9px}
+  .ref-d{font-size:13.3px;line-height:1.7;color:var(--muted);margin-bottom:13px}
+  .ref-go{font-family:var(--font-mono);font-size:11px;color:var(--E);display:inline-flex;gap:6px;transition:gap .25s}
+  .ref:hover .ref-go{gap:11px}
 </style>
 </head>
 <body>
@@ -121,6 +132,30 @@
         <li>以意义三律重建企业文化底盘</li>
         <li>行业专属智能体的定制与交付</li>
       </ul>
+    </div>
+
+
+    <div class="list-head" style="margin-top:70px">
+      <h2>延伸阅读</h2>
+      <span class="cnt">SDE 发生学 · 母站深度长文</span>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.8;max-width:60ch;margin:-4px 0 4px">以下文章出自 SDE 学派主站，从发生学角度深入剖析本领域的具体问题——它们是这套方法论已经走通的实证。</p>
+    <div class="refs-grid">
+        <a class="ref" href="https://sdeuniverses.com/column/efficiency-breeds-burnout/" target="_blank" rel="noopener">
+          <div class="ref-t">越提效，越内耗 · 一场层级错配的机制诊断</div>
+          <div class="ref-d">据《SIO逻辑学导论》——流程更细、指标更多、节奏更快，短期有产出，长期却是疲惫、烂尾与暴雷。内耗不是人不行，而是层级错配：目标锁死、路径加密、规则内卷、张…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/power-genesis-1/" target="_blank" rel="noopener">
+          <div class="ref-t">谁动一毫米，谁动一公里：一把看穿所有关系的尺子</div>
+          <div class="ref-d">权力发生学连载第一篇。权力不在龙椅上、不在保险柜里——它是两个方向改变率的不对称。一把尺子、四个水龙头、权力的四季、暗处的咽喉、给关系做体检的六步法。约一万…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/stability-is-not-stillness/" target="_blank" rel="noopener">
+          <div class="ref-t">稳定不是不变 · 一种关于「稳」的新理解</div>
+          <div class="ref-d">据《在突变中发生》——我们一直以为稳定就是不变。但真正的稳定不是凝固，而像呼吸：创造—张力—回稳的周期循环。突变哲学用SIO本体论与意义三律，给出一种「变中…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
     </div>
 
     <div style="margin-top:64px;border:1px solid var(--line);border-radius:20px;padding:38px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.45),rgba(11,11,26,.22))">

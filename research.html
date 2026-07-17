@@ -36,6 +36,17 @@
     color:var(--muted);font-size:15px;line-height:1.7;padding-left:22px;position:relative;
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
+
+  .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
+  .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
+  .ref::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--D);opacity:.4;transition:opacity .3s}
+  .ref:hover{border-color:color-mix(in srgb,var(--D) 45%,transparent);transform:translateY(-2px)}
+  .ref:hover::before{opacity:1}
+  .ref-t{font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.5;color:var(--text);margin-bottom:9px}
+  .ref-d{font-size:13.3px;line-height:1.7;color:var(--muted);margin-bottom:13px}
+  .ref-go{font-family:var(--font-mono);font-size:11px;color:var(--D);display:inline-flex;gap:6px;transition:gap .25s}
+  .ref:hover .ref-go{gap:11px}
 </style>
 </head>
 <body>
@@ -133,6 +144,35 @@
         <li>投稿前预审 · 反驳预测 · 修订建议</li>
         <li>跨学科的知识武器锻造</li>
       </ul>
+    </div>
+
+
+    <div class="list-head" style="margin-top:70px">
+      <h2>延伸阅读</h2>
+      <span class="cnt">SDE 发生学 · 母站深度长文</span>
+    </div>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.8;max-width:60ch;margin:-4px 0 4px">以下文章出自 SDE 学派主站，从发生学角度深入剖析本领域的具体问题——它们是这套方法论已经走通的实证。</p>
+    <div class="refs-grid">
+        <a class="ref" href="https://sdeuniverses.com/column/originality-is-forced/" target="_blank" rel="noopener">
+          <div class="ref-t">原创为什么总是被逼出来的 · 死结、临界与突入</div>
+          <div class="ref-d">据《SIO逻辑学导论》——原创不是灵感、不是天赋，而是被逼的结构事件：当优化（1到1′）和加速（1到N）双双抵达死结，张力累积到临界点，发生逻辑被迫突入——…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/umbrella-model/" target="_blank" rel="noopener">
+          <div class="ref-t">一把伞，撑开一个更大的数学——相容性公理与伞模型</div>
+          <div class="ref-d">王博士与SDE专栏第六篇：数学两千年从未被说破的相容性公理，如何在生命、AI、复杂系统面前失效；可重叠的伞模型如何取而代之，并把传统数学作为退化极限包含在内…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/midwifing-thought/" target="_blank" rel="noopener">
+          <div class="ref-t">接生思想：学术创造的社会发生机制</div>
+          <div class="ref-d">学术创造在一个人心中孕育，却必须在他人的手中出生。一个学者最初萌生的问题感极其脆弱——它没有语言，没有合法性，连他自己都不确定是不是错觉。本文命名接住它的那…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
+        <a class="ref" href="https://sdeuniverses.com/column/why-old-critical-thinking-fails/" target="_blank" rel="noopener">
+          <div class="ref-t">为什么GPT时代，旧的批判性思维失灵了 · 深度长文</div>
+          <div class="ref-d">从单一E—D思考场，到多元E—D压缩生成体｜据《GPT时代的SDE批判性思维》（王德生 著）。约两万字深度长文，提供网页长文 · PDF在线阅读 · PDF…</div>
+          <div class="ref-go">母站原文 →</div>
+        </a>
     </div>
 
     <div style="margin-top:64px;border:1px solid var(--line);border-radius:20px;padding:38px;text-align:center;background:linear-gradient(180deg,rgba(22,18,48,.45),rgba(11,11,26,.22))">
