@@ -221,16 +221,39 @@
    ============================================================ */
 
 // ---------- 基底配置 ----------
+/* ============================================================
+   SDE 智问 · 提智引擎（编排层）
+   核心职责：不是"调用模型"，而是"逼模型真的跑完三条新生臂，
+   并在每一步留下可校验的痕迹"。工序跑残了，前端当场看得见。
+
+   访客自带 Key，全程浏览器内运行。境外基底经 /api/llm-proxy 只转发。
+   ============================================================ */
+
+// ---------- 基底配置 ----------
 const BASES = {
-  deepseek: { name: 'DeepSeek',   direct: true,  endpoint: 'https://api.deepseek.com/chat/completions', model: 'deepseek-chat', keyName: 'sde_ds_key' },
-  glm:      { name: '智谱 GLM',    direct: true,  endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', model: 'glm-4-plus', keyName: 'sde_glm_key' },
-  kimi:     { name: 'Kimi',        direct: false, endpoint: 'https://api.moonshot.cn/v1/chat/completions', model: 'moonshot-v1-32k', keyName: 'sde_kimi_key' },
-  qwen:     { name: '通义千问',     direct: false, endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', model: 'qwen-plus', keyName: 'sde_qwen_key' },
-  minimax:  { name: 'MiniMax',     direct: false, endpoint: 'https://api.minimax.chat/v1/text/chatcompletion_v2', model: 'abab6.5s-chat', keyName: 'sde_mm_key' },
-  gpt:      { name: 'GPT',         direct: false, endpoint: 'https://api.openai.com/v1/chat/completions', model: 'gpt-4o', keyName: 'sde_gpt_key' },
-  claude:   { name: 'Claude',      direct: false, endpoint: 'https://api.anthropic.com/v1/messages', model: 'claude-sonnet-4-6', keyName: 'sde_claude_key' },
-  gemini:   { name: 'Gemini',      direct: false, endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', model: 'gemini-2.0-flash', keyName: 'sde_gemini_key' },
+  deepseek: { name: 'DeepSeek', direct: true, endpoint: 'https://api.deepseek.com/chat/completions', keyName: 'sde_ds_key',
+    models: [
+      { id:'deepseek-v4-pro',   label:'V4 Pro（推理最强·提智首选）' },
+      { id:'deepseek-v4-flash', label:'V4 Flash（快·便宜）' },
+      { id:'deepseek-reasoner', label:'Reasoner（思考模式）' },
+      { id:'deepseek-chat',     label:'Chat（旧版·7/24停用）' },
+    ] },
+  glm: { name: '智谱 GLM', direct: true, endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', keyName: 'sde_glm_key',
+    models: [ { id:'glm-4-plus', label:'GLM-4-Plus（旗舰）' }, { id:'glm-4-air', label:'GLM-4-Air（快）' } ] },
+  kimi: { name: 'Kimi', direct: false, endpoint: 'https://api.moonshot.cn/v1/chat/completions', keyName: 'sde_kimi_key',
+    models: [ { id:'moonshot-v1-32k', label:'moonshot-v1-32k' }, { id:'moonshot-v1-128k', label:'moonshot-v1-128k（长文）' } ] },
+  qwen: { name: '通义千问', direct: false, endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', keyName: 'sde_qwen_key',
+    models: [ { id:'qwen-max', label:'qwen-max（旗舰）' }, { id:'qwen-plus', label:'qwen-plus' } ] },
+  minimax: { name: 'MiniMax', direct: false, endpoint: 'https://api.minimax.chat/v1/text/chatcompletion_v2', keyName: 'sde_mm_key',
+    models: [ { id:'abab6.5s-chat', label:'abab6.5s' } ] },
+  gpt: { name: 'GPT', direct: false, endpoint: 'https://api.openai.com/v1/chat/completions', keyName: 'sde_gpt_key',
+    models: [ { id:'gpt-4o', label:'gpt-4o' }, { id:'gpt-4o-mini', label:'gpt-4o-mini（快）' } ] },
+  claude: { name: 'Claude', direct: false, endpoint: 'https://api.anthropic.com/v1/messages', keyName: 'sde_claude_key',
+    models: [ { id:'claude-sonnet-4-6', label:'Sonnet 4.6' }, { id:'claude-opus-4-1', label:'Opus 4.1（最强）' } ] },
+  gemini: { name: 'Gemini', direct: false, endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', keyName: 'sde_gemini_key',
+    models: [ { id:'gemini-2.0-flash', label:'2.0 Flash' } ] },
 };
+let CURRENT_MODEL = {};  // baseKey -> 选中的 model id
 
 const PROXY = '/api/llm-proxy';           // 境外基底经此只转发（源码在 worker.js）
 const REFLECT_VER = 'v1';                  // 内功升级必 +1，否则用到旧心得
@@ -243,9 +266,10 @@ async function rawCall(baseKey, messages, { maxTokens = 4000, temperature = 0.6,
   const b = BASES[baseKey];
   const key = localStorage.getItem(b.keyName);
   if (!key) throw new Error(`缺少 ${b.name} 的 API Key`);
-  emitEvent('call-start', `${label} · ${b.name}`, {model: b.model});
+  const modelId = CURRENT_MODEL[baseKey] || b.models[0].id;
+  emitEvent('call-start', `${label} · ${b.name}`, {model: modelId});
 
-  const payload = { model: b.model, messages, max_tokens: maxTokens, temperature };
+  const payload = { model: modelId, messages, max_tokens: maxTokens, temperature };
   const target = b.direct ? b.endpoint : PROXY;
   const headers = { 'Content-Type': 'application/json' };
   if (b.direct) headers['Authorization'] = `Bearer ${key}`;
@@ -281,11 +305,11 @@ async function ensureReflection(baseKey, sdeFullText, onProgress) {
   const lsKey = `sde_reflect_${REFLECT_VER}_${baseKey}`;
   const cached = localStorage.getItem(lsKey);
   if (cached && cached.length > 1500) {
-    emitEvent('call-start', '内化发生学 · 复用', {model: BASES[baseKey].model});
+    emitEvent('call-start', '内化发生学 · 复用', {model: CURRENT_MODEL[baseKey] || BASES[baseKey].models[0].id});
     emitEvent('call-done', `内化发生学 · 复用此前写好的心得（${cached.length} 字，不重写）`, {chars: cached.length});
     return { text: cached, cached: true };
   }
-  emitEvent('call-start', '内化发生学 · 首次', {model: BASES[baseKey].model});
+  emitEvent('call-start', '内化发生学 · 首次', {model: CURRENT_MODEL[baseKey] || BASES[baseKey].models[0].id});
   onProgress?.('该基底正在亲手内化发生学（这一步每个模型只做一次，约一分钟）…');
 
   const reflectPrompt = [
@@ -429,19 +453,19 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
 
 检验：这个最终判断，能不能被 C1、C2、C3 中任何单独一个得出？如果能，就是失败，重来。
 
-同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n最终产出不少于 2800 字、不多于 3400 字。把那个单视角不可达的判断充分展开讲透——它为何成立、如何运作、有何后果，锋利、零术语。
+同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n【字数硬性要求】<final> 里的最终产出必须在 2800–3200 字之间，写到约 3000 字收尾，不要超过 3200 字。把那个单视角不可达的判断充分讲透——它为何成立、如何运作、有何后果，锋利、零术语。
 
 输出格式（严格）：
 <reachable_by_single>这个最终判断能否被单条臂单独得出（yes=失败/no=成功）</reachable_by_single>
 <falsifiers>你给了几条可操作证伪条款（数字）</falsifiers>
 <final>[二阶碰撞的最终判断 + 证伪条款，零术语，这是给用户的核心产出]</final>` }
   ];
-  const raw = await rawCall(baseKey, msgs, { maxTokens: 5500, temperature: 0.6, label: '二阶碰撞' });
+  const raw = await rawCall(baseKey, msgs, { maxTokens: 4600, temperature: 0.6, label: '二阶碰撞' });
   return {
     raw,
     reachableBySingle: /yes/i.test(extractBlock(raw, 'reachable_by_single') || ''),
     falsifiers: parseInt(extractBlock(raw, 'falsifiers')) || 0,
-    final: extractBlock(raw, 'final'),
+    final: extractBlock(raw, 'final') || raw.replace(/<[^>]+>[\s\S]*?<\/[^>]+>/g,'').replace(/<[^>]+>/g,'').trim() || raw.trim(),
   };
 }
 
@@ -450,7 +474,7 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
    ============================================================ */
 async function armBaseline(baseKey, question) {
   // 裸模型：不给任何 SDE
-  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n要求：回答必须充分展开，不少于 2800 字，不多于 3400 字。内容单薄时要深入细节、举例、分情况讨论，把话说透，不要草草收尾。' }], { maxTokens: 5200, temperature: 0.6, label: '裸模型（基线A）' });
+  const raw = await rawCall(baseKey, [{ role: 'user', content: question + '\n\n【字数硬性要求】回答总字数必须在 2800–3200 字之间。这是硬约束：写到约 3000 字就收尾，不要超过 3200 字，也不要少于 2800 字。内容单薄时深入细节、举例、分情况讨论把字数写够；话多时提炼精简到 3200 字以内。' }], { maxTokens: 4200, temperature: 0.6, label: '裸模型（基线A）' });
   return raw;
 }
 async function armConventional(baseKey, question) {
@@ -458,7 +482,7 @@ async function armConventional(baseKey, question) {
   const raw = await rawCall(baseKey, [{ role: 'user', content:
 `用严谨的研究方法回答这个问题：先提出2-3个竞争性猜想，各自给出支持证据与反证，最后择优给出结论。
 
-问题：${question}\n\n要求：全文不少于 2800 字，不多于 3400 字，充分展开每个猜想的论证。` }], { maxTokens: 5200, temperature: 0.6, label: '常规科研（基线B）' });
+问题：${question}\n\n【字数硬性要求】全文总字数必须在 2800–3200 字之间，写到约 3000 字收尾。这是硬约束，不要超过 3200 字。` }], { maxTokens: 4200, temperature: 0.6, label: '常规科研（基线B）' });
   return raw;
 }
 
@@ -487,40 +511,33 @@ function auditTrace(c1, c2, c3, collision) {
    ============================================================ */
 async function predictionTest(baseKey, reflection, question, conventional, sdeFinal) {
   // 匿名化送模型判断（防护短），但结果还原成真名给用户看
-  const flip = Math.random() < 0.5;
-  const first = flip ? sdeFinal : conventional;
-  const second = flip ? conventional : sdeFinal;
-  const firstIsSde = flip;
   const msgs = [
     { role: 'user', content:
 `问题：${question}
 
-答案一：${first}
+【常规科研答案】：${conventional}
 
-答案二：${second}
+【SDE答案】：${sdeFinal}
 
-请做三件事，逐条回答：
-1. 只看"答案一"，能否预料到"答案二"的核心判断？（yes=能推出/no=推不出）
-2. 只看"答案二"，能否预料到"答案一"的核心判断？
-3. 哪一个答案包含了另一个完全触及不到的结构？那个结构具体是什么？两个答案分别停在了什么认知层级？
+请做三件事，逐条回答（直接用"常规科研"和"SDE"这两个名字，不要用"答案一/二"）：
+1. 只看【常规科研答案】，能否预料到【SDE答案】的核心判断？（yes=能推出/no=推不出）
+2. 只看【SDE答案】，能否预料到【常规科研答案】的核心判断？
+3. SDE 答案包含了哪个常规科研完全触及不到的结构？具体是什么？
+4. 常规科研和 SDE 分别停在了什么认知层级？
 
-输出格式：
-<one_predicts_two>yes/no</one_predicts_two>
-<two_predicts_one>yes/no</two_predicts_one>
-<unique>那个独有的结构具体是什么（一句话）</unique>
-<levels>两个答案分别停在什么认知层级（一句话）</levels>` }
+输出格式（严格，unique 和 levels 里必须点名"常规科研"或"SDE"，不许用"答案一/二"）：
+<conv_predicts_sde>yes/no</conv_predicts_sde>
+<sde_predicts_conv>yes/no</sde_predicts_conv>
+<unique>SDE 独有的结构是什么（一句话，明确说"SDE …"）</unique>
+<levels>常规科研停在什么层级、SDE 停在什么层级（一句话，分别点名）</levels>` }
   ];
   const raw = await rawCall(baseKey, msgs, { maxTokens: 1800, label: '预料测试' });
-  const oneToTwo = /yes/i.test(extractBlock(raw, 'one_predicts_two') || '');
-  const twoToOne = /yes/i.test(extractBlock(raw, 'two_predicts_one') || '');
-  // 还原到真名：conv / sde
-  const convPredictsSde = firstIsSde ? twoToOne : oneToTwo;  // 常规科研能否预料到SDE
-  const sdePredictsConv = firstIsSde ? oneToTwo : twoToOne;
+  const convPredictsSde = /yes/i.test(extractBlock(raw, 'conv_predicts_sde') || '');
+  const sdePredictsConv = /yes/i.test(extractBlock(raw, 'sde_predicts_conv') || '');
   return {
     unique: extractBlock(raw, 'unique') || '',
     levels: extractBlock(raw, 'levels') || '',
     convPredictsSde, sdePredictsConv,
-    // 真跃迁 = 常规科研预料不到 SDE
     realLeap: (convPredictsSde === false),
     raw
   };
