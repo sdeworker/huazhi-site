@@ -37,6 +37,26 @@
   }
   .uses li::before{content:"→";position:absolute;left:0;color:var(--f);font-family:var(--font-mono);font-size:13px}
 
+  .zhiwen-card{display:flex;align-items:center;gap:30px;margin-top:44px;padding:32px 36px;border-radius:20px;
+    border:1px solid rgba(63,160,160,.35);position:relative;overflow:hidden;
+    background:linear-gradient(110deg,rgba(63,160,160,.14),rgba(45,225,194,.06) 45%,rgba(11,11,26,.3));
+    transition:border-color .3s,transform .3s,box-shadow .3s}
+  .zhiwen-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--S),#3FA0A0)}
+  .zhiwen-card:hover{border-color:rgba(45,225,194,.6);transform:translateY(-3px);box-shadow:0 24px 60px -30px rgba(45,225,194,.5)}
+  @media(max-width:760px){.zhiwen-card{flex-direction:column;align-items:flex-start;gap:20px;padding:28px 26px}}
+  .zw-left{flex:1}
+  .zw-tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--S);margin-bottom:12px}
+  .zw-title{font-family:var(--font-display);font-weight:800;font-size:28px;letter-spacing:-.01em;margin-bottom:12px;
+    background:linear-gradient(100deg,var(--S),#3FA0A0);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .zw-desc{color:var(--muted);font-size:15px;line-height:1.8;max-width:52ch;margin-bottom:14px}
+  .zw-desc b{color:var(--text)}
+  .zw-feat{font-family:var(--font-mono);font-size:12px;color:var(--muted-2);line-height:1.8}
+  .zw-right{flex:none;text-align:right}
+  @media(max-width:760px){.zw-right{text-align:left}}
+  .zw-go{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:17px;
+    padding:15px 28px;border-radius:13px;background:linear-gradient(100deg,var(--S),#3FA0A0);color:#06231f;
+    box-shadow:0 10px 34px rgba(45,225,194,.3);white-space:nowrap}
+  .zw-note{font-family:var(--font-mono);font-size:11px;color:var(--muted-2);margin-top:12px}
   .refs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:22px}
   .ref{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;
     background:linear-gradient(180deg,rgba(18,18,42,.4),rgba(11,11,26,.2));transition:border-color .3s,transform .3s}
@@ -81,6 +101,19 @@
 
 <section class="list-sec">
   <div class="wrap">
+
+    <a class="zhiwen-card" href="zhiwen.html">
+      <div class="zw-left">
+        <div class="zw-tag">现场体验 · LIVE</div>
+        <div class="zw-title">SDE 智问</div>
+        <div class="zw-desc">同一个问题，<b>裸模型</b>、<b>常规科研</b>、<b>SDE 提智</b> 三路并排，工序痕迹全部可查——上面那句「信息发生 ≠ 知识发生」，你可以亲手验证一次。</div>
+        <div class="zw-feat">六路径涌现　·　三方程求残差　·　123 原理新生　·　二阶碰撞　·　执行审计</div>
+      </div>
+      <div class="zw-right">
+        <div class="zw-go">开始提智对照 →</div>
+        <div class="zw-note">自带 API Key · 全程浏览器内运行</div>
+      </div>
+    </a>
 
     <div class="list-head" style="margin-top:70px">
       <h2>缺的是什么</h2>

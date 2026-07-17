@@ -117,7 +117,16 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand"><span class="mark"></span>SDE 智问 <span class="en">ZHIWEN</span></div></div></header>
+<header><div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+  <div class="brand"><span class="mark"></span>SDE 智问 <span class="en">ZHIWEN</span></div>
+  <nav style="display:flex;align-items:center;gap:22px;font-size:14px">
+    <a href="agent.html" style="color:var(--muted);text-decoration:none;font-family:var(--font-m);font-size:12.5px">← SDE 智能体</a>
+    <a href="index.html" style="color:var(--muted-2);text-decoration:none;display:flex;align-items:center;gap:8px">
+      <span style="width:18px;height:18px;border-radius:5px;background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E))"></span>
+      <span style="font-weight:600">华智科技</span>
+    </a>
+  </nav>
+</div></header>
 
 <div class="wrap">
   <div class="hero">
@@ -453,7 +462,7 @@ async function secondOrderCollision(baseKey, reflection, question, c1, c2, c3) {
 
 检验：这个最终判断，能不能被 C1、C2、C3 中任何单独一个得出？如果能，就是失败，重来。
 
-同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n【字数硬性要求】<final> 里的最终产出必须在 2800–3200 字之间，写到约 3000 字收尾，不要超过 3200 字。把那个单视角不可达的判断充分讲透——它为何成立、如何运作、有何后果，锋利、零术语。
+同时给出证伪条款：≥2 条可操作的、能被事实推翻的条件。\n\n【形式铁律】最终产出必须是一个贯穿到底的单一判断，不是清单。禁止用"第一个真相/第二点/首先其次"这类列表式结构把它拆成并列的几条——那是回到了视角拼盘。要让一个判断像一条线索一样贯穿全文，层层深入。\n\n【字数硬性要求】<final> 里的最终产出必须在 2800–3200 字之间，写到约 3000 字收尾，不要超过 3200 字。把那个单视角不可达的判断充分讲透——它为何成立、如何运作、有何后果，锋利、零术语。
 
 输出格式（严格）：
 <reachable_by_single>这个最终判断能否被单条臂单独得出（yes=失败/no=成功）</reachable_by_single>
