@@ -155,7 +155,7 @@
     <h3 style="margin-top:20px">② 提出你的问题</h3>
     <textarea id="qInput" placeholder="任何真问题。越是你已经琢磨很久、绕不出来的，对照越明显。"></textarea>
     <button class="go" id="goBtn">开始提智对照 →</button>
-    <div class="hint" style="margin-top:12px">首次使用该基底，它会先花约一分钟"亲手内化发生学"（写一份心得，只写一次，之后永久复用）。完整一轮约 10 次模型调用，用你自己的额度。三路输出各控制在 3000 字内。</div>
+    <div class="hint" style="margin-top:12px">首次使用该基底，它会先花约一分钟"亲手内化发生学"（写一份心得，只写一次，之后永久复用）。完整一轮约 10 次模型调用，用你自己的额度。三路输出各约 3000 字。思考模型（V4 Pro/Flash）会先跑一段推理再出正文，耗时更长、消耗更多额度，但提智质量最好。</div>
   </div>
 
   <div class="err" id="errBox"></div>
@@ -242,9 +242,9 @@
 const BASES = {
   deepseek: { name: 'DeepSeek', direct: true, endpoint: 'https://api.deepseek.com/chat/completions', keyName: 'sde_ds_key',
     models: [
-      { id:'deepseek-v4-pro',   label:'V4 Pro（推理最强·提智首选）' },
-      { id:'deepseek-v4-flash', label:'V4 Flash（快·便宜）' },
-      { id:'deepseek-reasoner', label:'Reasoner（思考模式）' },
+      { id:'deepseek-v4-pro',   label:'V4 Pro（推理最强·提智首选）', thinking:true },
+      { id:'deepseek-v4-flash', label:'V4 Flash（快·便宜）', thinking:true },
+      { id:'deepseek-reasoner', label:'Reasoner（思考模式）', thinking:true },
       { id:'deepseek-chat',     label:'Chat（旧版·7/24停用）' },
     ] },
   glm: { name: '智谱 GLM', direct: true, endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', keyName: 'sde_glm_key',
@@ -278,7 +278,10 @@ async function rawCall(baseKey, messages, { maxTokens = 4000, temperature = 0.6,
   const modelId = CURRENT_MODEL[baseKey] || b.models[0].id;
   emitEvent('call-start', `${label} · ${b.name}`, {model: modelId});
 
-  const payload = { model: modelId, messages, max_tokens: maxTokens, temperature };
+  // 思考模型：推理链也消耗 max_tokens，必须给足预算，否则正文被吃空
+  const isThinking = (b.models.find(m => m.id === modelId) || {}).thinking;
+  const budget = isThinking ? Math.max(maxTokens * 4, 16000) : maxTokens;
+  const payload = { model: modelId, messages, max_tokens: budget, temperature };
   const target = b.direct ? b.endpoint : PROXY;
   const headers = { 'Content-Type': 'application/json' };
   if (b.direct) headers['Authorization'] = `Bearer ${key}`;
@@ -287,7 +290,13 @@ async function rawCall(baseKey, messages, { maxTokens = 4000, temperature = 0.6,
   const r = await fetch(target, { method: 'POST', headers, body: JSON.stringify(payload) });
   if (!r.ok) throw new Error(`${b.name} 返回 ${r.status}: ${(await r.text()).slice(0,200)}`);
   const d = await r.json();
-  const out = d.choices?.[0]?.message?.content ?? '';
+  const msg = d.choices?.[0]?.message || {};
+  let out = msg.content ?? '';
+  if (!out.trim() && msg.reasoning_content) {
+    // 思考模型把预算全用在推理上，正文为空
+    emitEvent('call-done', `${label} · ⚠ 正文为空（推理占满预算），已重试`, {chars: 0});
+    throw new Error(`${label}：该模型思考过长导致正文为空，请改用非思考模型或重试`);
+  }
   emitEvent('call-done', `${label} · 收到 ${out.length} 字`, {chars: out.length});
   return out;
 }
@@ -296,6 +305,11 @@ async function rawCall(baseKey, messages, { maxTokens = 4000, temperature = 0.6,
 function extractBlock(text, tag) {
   const m = text.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'i'));
   return m ? m[1].trim() : null;
+}
+function stripTags(text) {
+  if (!text) return '';
+  return text.replace(/<(trace|path_count|corrections|residual_found|converged|writeback)>[\s\S]*?<\/\1>/gi,'')
+             .replace(/<\/?[a-z_]+>/gi,'').trim();
 }
 function extractAll(text, tag) {
   const re = new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'gi');
@@ -385,7 +399,7 @@ async function armC1(baseKey, reflection, question) {
     trace: extractBlock(raw, 'trace'),
     pathCount: parseInt(extractBlock(raw, 'path_count')) || 0,
     corrections: parseInt(extractBlock(raw, 'corrections')) || 0,
-    judgment: extractBlock(raw, 'c1'),
+    judgment: extractBlock(raw, 'c1') || stripTags(raw),
   };
 }
 
@@ -412,7 +426,7 @@ async function armC2(baseKey, reflection, question) {
     raw,
     trace: extractBlock(raw, 'trace'),
     residualFound: /yes/i.test(extractBlock(raw, 'residual_found') || ''),
-    judgment: extractBlock(raw, 'c2'),
+    judgment: extractBlock(raw, 'c2') || stripTags(raw),
   };
 }
 
@@ -441,7 +455,7 @@ async function armC3(baseKey, reflection, question) {
     trace: extractBlock(raw, 'trace'),
     converged: /yes/i.test(extractBlock(raw, 'converged') || ''),
     writeback: /yes/i.test(extractBlock(raw, 'writeback') || ''),
-    judgment: extractBlock(raw, 'c3'),
+    judgment: extractBlock(raw, 'c3') || stripTags(raw),
   };
 }
 
