@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>道德经问题求解引擎 · SDE | 华智科技</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B18; --panel:#14121F; --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.05);
+    --text:#EDE8DC; --muted:#A89F8E; --muted-2:#6B6558;
+    --jin:#C9A85C; --dao:#5FA88C; --E:#6D5EF6; --D:#FF5C8A; --S:#2DE1C2;
+    --font-d:'Sora',sans-serif; --font-m:'Space Mono',monospace; --font-r:'Noto Serif SC',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--font-d);line-height:1.6;
+    background-image:radial-gradient(1000px circle at 12% -8%,rgba(201,168,92,.10),transparent 45%),radial-gradient(800px circle at 100% 0,rgba(95,168,140,.08),transparent 42%)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  header{padding:22px 0;border-bottom:1px solid var(--line)}
+  .hd-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+  .seal{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--jin),#9a7d3d);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-r);font-weight:700;font-size:20px;color:#1a1510}
+  .brand .en{font-family:var(--font-m);font-size:11px;color:var(--muted-2);font-weight:400;letter-spacing:.08em}
+  header nav{display:flex;align-items:center;gap:20px;font-size:13px}
+  header nav a{color:var(--muted);text-decoration:none;font-family:var(--font-m);font-size:12px}
+  header nav a:hover{color:var(--text)}
+
+  .hero{padding:46px 0 20px}
+  .kick{font-family:var(--font-m);font-size:12px;letter-spacing:.2em;color:var(--jin)}
+  h1{font-family:var(--font-r);font-weight:700;font-size:clamp(30px,5vw,46px);letter-spacing:.01em;margin:16px 0 14px}
+  h1 .g{color:var(--jin)}
+  .lede{color:var(--muted);font-size:16px;line-height:1.9;max-width:60ch;font-family:var(--font-r)}
+  .lede b{color:var(--text);font-weight:600}
+  .flow-line{margin-top:20px;font-family:var(--font-m);font-size:12.5px;color:var(--dao);line-height:2}
+
+  .setup{margin-top:32px;border:1px solid var(--line);border-radius:18px;padding:26px;background:linear-gradient(180deg,rgba(20,18,31,.6),rgba(11,11,24,.3))}
+  .setup h3{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  select,input,textarea{background:rgba(11,11,24,.7);border:1px solid var(--line);border-radius:11px;color:var(--text);
+    font-family:var(--font-d);font-size:15px;padding:12px 15px}
+  select{min-width:170px;cursor:pointer} input{flex:1;min-width:200px}
+  textarea{width:100%;min-height:82px;resize:vertical;font-size:16px;line-height:1.7;font-family:var(--font-r)}
+  .hint{font-family:var(--font-m);font-size:11.5px;color:var(--muted-2);line-height:1.7;margin-top:4px}
+  .go{margin-top:16px;display:inline-flex;align-items:center;gap:9px;font-family:var(--font-d);font-weight:600;font-size:16px;
+    padding:14px 32px;border-radius:12px;border:0;cursor:pointer;color:#1a1510;
+    background:linear-gradient(100deg,var(--jin),#b8934a);box-shadow:0 10px 34px rgba(201,168,92,.3)}
+  .go:disabled{opacity:.5;cursor:not-allowed}
+
+  .console{margin-top:24px;display:none;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,rgba(16,14,26,.9),rgba(11,11,24,.7))}
+  .console-top{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--line);background:rgba(11,11,24,.6)}
+  .pulse{width:10px;height:10px;border-radius:50%;background:var(--dao);box-shadow:0 0 0 0 rgba(95,168,140,.6);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,168,140,.6)}70%{box-shadow:0 0 0 12px rgba(95,168,140,0)}100%{box-shadow:0 0 0 0 rgba(95,168,140,0)}}
+  .console-top .now{font-family:var(--font-m);font-size:13px;color:var(--dao)}
+  .console-top .model{margin-left:auto;font-family:var(--font-m);font-size:12px;color:var(--muted-2)}
+  .console-top .model b{color:var(--jin)}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;padding:15px 20px;border-bottom:1px solid var(--line-soft)}
+  .node{font-family:var(--font-m);font-size:11px;padding:6px 12px;border-radius:100px;border:1px solid var(--line);color:var(--muted-2);display:flex;align-items:center;gap:6px;transition:all .3s}
+  .node .d{width:6px;height:6px;border-radius:50%;background:var(--muted-2)}
+  .node.run{border-color:var(--dao);color:var(--dao);background:rgba(95,168,140,.08)}
+  .node.run .d{background:var(--dao);animation:blink .8s infinite}
+  .node.ok{border-color:rgba(95,168,140,.3);color:var(--dao)} .node.ok .d{background:var(--dao)}
+  @keyframes blink{50%{opacity:.3}}
+  .log{max-height:170px;overflow-y:auto;padding:14px 20px;font-family:var(--font-m);font-size:12px;line-height:1.9}
+  .log-line{color:var(--muted)} .log-line .tk{color:var(--muted-2)} .log-line.hi{color:var(--dao)} .log-line.warn{color:#e0a35c}
+
+  .results{margin-top:26px;display:none;flex-direction:column;gap:20px;padding-bottom:80px}
+  .card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(20,18,31,.5),rgba(11,11,24,.28))}
+  .card-hd{padding:18px 24px 14px;border-bottom:1px solid var(--line-soft);display:flex;align-items:baseline;gap:12px}
+  .card-hd .t{font-family:var(--font-r);font-weight:700;font-size:19px}
+  .card-hd .tag{font-family:var(--font-m);font-size:11px;color:var(--muted-2)}
+  .card-body{padding:22px 24px;font-family:var(--font-r);font-size:15.5px;line-height:1.95;white-space:pre-wrap}
+  .card.sol{border-color:rgba(201,168,92,.35)} .card.sol .card-hd .t{color:var(--jin)}
+  .card.sol .card-body{color:var(--text)}
+  .card.ctrl .card-body{color:var(--muted);max-height:340px;overflow-y:auto}
+
+  .scriptures{display:flex;flex-direction:column;gap:12px}
+  .scr{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:linear-gradient(180deg,rgba(95,168,140,.05),rgba(11,11,24,.15))}
+  .scr .ch{font-family:var(--font-r);font-weight:700;font-size:16px;color:var(--dao);margin-bottom:10px}
+  .scr .jing{font-family:var(--font-r);font-size:16px;line-height:1.9;color:var(--text);padding:12px 16px;border-left:2px solid var(--dao);margin-bottom:12px;background:rgba(95,168,140,.06)}
+  .scr .shi{font-size:14px;color:var(--muted);line-height:1.8}
+
+  .arms-check{display:flex;flex-wrap:wrap;gap:14px;padding:6px 0}
+  .ac{display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:13px;color:var(--muted)}
+  .ac .dot{width:9px;height:9px;border-radius:50%} .ac .dot.ok{background:var(--dao);box-shadow:0 0 8px rgba(95,168,140,.5)} .ac .dot.no{background:var(--D)}
+  .spine-box{border:1px solid rgba(201,168,92,.3);border-left:3px solid var(--jin);border-radius:0 12px 12px 0;padding:18px 22px;background:rgba(201,168,92,.05);margin-top:8px}
+  .spine-box .lb{font-family:var(--font-m);font-size:11px;color:var(--jin);margin-bottom:8px}
+  .spine-box .txt{font-family:var(--font-r);font-size:17px;line-height:1.7;color:var(--text)}
+
+  .ops{display:flex;gap:10px;padding:14px 24px;border-top:1px solid var(--line-soft)}
+  .op{font-family:var(--font-m);font-size:12px;padding:10px 18px;border-radius:10px;border:1px solid var(--line);color:var(--muted);background:rgba(11,11,24,.5);cursor:pointer;transition:all .25s}
+  .op:hover{border-color:var(--jin);color:var(--text)}
+  .op.docx{border-color:rgba(201,168,92,.4);color:var(--jin)}
+  .err{margin-top:20px;border:1px solid rgba(255,92,138,.4);border-radius:12px;padding:18px 22px;color:var(--D);font-family:var(--font-m);font-size:13.5px;line-height:1.7;display:none}
+  .collapse{cursor:pointer;user-select:none} .collapse-body{display:none} .collapse-body.open{display:block}
+</style>
+</head>
+<body>
+<header><div class="wrap hd-inner">
+  <div class="brand"><span class="seal">道</span>道德经问题求解引擎 <span class="en">SDE SOLVER</span></div>
+  <nav>
+    <a href="agent.html">← SDE 智能体</a>
+    <a href="index.html" style="display:flex;align-items:center;gap:7px;color:var(--muted-2)"><span style="width:17px;height:17px;border-radius:5px;background:conic-gradient(from 140deg,var(--E),var(--D),var(--S),var(--E))"></span><span style="font-weight:600">华智科技</span></a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <p class="kick">SDE 经典求解 · 道德经</p>
+    <h1>输入一道难题，<span class="g">让老子接住它</span></h1>
+    <p class="lede">这不是直接回答问题。它先用 SDE 科研的<b>三生法</b>，把你的难题从"要解决的麻烦"，重解成"一个发生结构出了什么问题"——<b>再让《道德经》原文来接住这个结构，生成方案。</b></p>
+    <div class="flow-line">难题　→　①三生法重解（三臂 + 二阶碰撞）　→　②道德经 81 章检索　→　③以原文为据出方案</div>
+  </div>
+
+  <div class="setup">
+    <h3>① 选基底，填你自己的 Key（只存在你的浏览器里）</h3>
+    <div class="row">
+      <select id="baseSel">
+        <option value="deepseek">DeepSeek（国内直连）</option>
+        <option value="glm">智谱 GLM（国内直连）</option>
+      </select>
+      <select id="modelSel" style="min-width:200px"></select>
+      <input id="keyInput" type="password" placeholder="粘贴该基底的 API Key">
+    </div>
+    <div class="hint">Key 存于浏览器 localStorage，全程本地，不经我们服务器。与 SDE 智问共用同一套 Key。</div>
+    <h3 style="margin-top:20px">② 输入你的难题</h3>
+    <textarea id="qInput" placeholder="任何真实的困境。越具体越好。例：为什么团队一扩大，创新反而下降？"></textarea>
+    <button class="go" id="goBtn">求解 →</button>
+    <div class="hint" style="margin-top:12px">首次会花约一分钟内化发生学。完整一轮约 6 次模型调用（三臂 + 碰撞 + 方案 + 对照组），用你自己的额度。</div>
+  </div>
+
+  <div class="err" id="errBox"></div>
+
+  <div class="console" id="console">
+    <div class="console-top"><span class="pulse" id="pulse"></span><span class="now" id="nowText">准备中…</span><span class="model" id="modelText"></span></div>
+    <div class="flow" id="flow"></div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="card sol" id="solCard">
+      <div class="card-hd"><span class="t">解决方案</span><span class="tag">以道德经原文为据 · 零术语</span></div>
+      <div class="card-body" id="rSol"></div>
+      <div class="ops"><button class="op" id="saveSol">保存</button><button class="op docx" id="docxSol">下载 Word</button></div>
+    </div>
+
+    <div class="spine-box" id="spineBox" style="display:none">
+      <div class="lb">涌现脊柱 · 二阶碰撞逼出的那一句</div>
+      <div class="txt" id="spineTxt"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><span class="t">命中的经文</span><span class="tag" id="scrTag"></span></div>
+      <div class="card-body"><div class="scriptures" id="rScr"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd collapse" id="reinterpToggle"><span class="t">三生法重解全程 ▾</span><span class="tag">三臂 + 二阶碰撞（含 SDE 术语，展开可看）</span></div>
+      <div class="card-body collapse-body" id="rReinterp"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><span class="t">五臂自检</span><span class="tag">工序痕迹</span></div>
+      <div class="card-body"><div class="arms-check" id="rArms"></div></div>
+    </div>
+
+    <div class="card ctrl">
+      <div class="card-hd collapse" id="ctrlToggle"><span class="t">对照组 · 常规解读 ▾</span><span class="tag">不提智 · 传统道德经解读（展开对比）</span></div>
+      <div class="card-body collapse-body" id="rCtrl"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   道德经问题求解引擎（网页版）
+   问题 → 三生法重解(C1/C2/C3三臂+二阶碰撞) → 抽涌现脊柱
+        → 道德经RAG检索 → 以原文为据生成方案(改姓) → 对照组
+   一比一还原自桌面 Python 版 sde_solver。访客自带 Key，全程浏览器内。
+   ============================================================ */
+
+// ---------- 基底（复用智问的配置）----------
+const DJ_BASES = {
+  deepseek: { name:'DeepSeek', direct:true, endpoint:'https://api.deepseek.com/chat/completions', keyName:'sde_ds_key',
+    models:[{id:'deepseek-v4-pro',label:'V4 Pro（推理最强）',thinking:true},{id:'deepseek-v4-flash',label:'V4 Flash（快）',thinking:true},{id:'deepseek-chat',label:'Chat（旧·7/24停用）'}] },
+  glm: { name:'智谱 GLM', direct:true, endpoint:'https://open.bigmodel.cn/api/paas/v4/chat/completions', keyName:'sde_glm_key',
+    models:[{id:'glm-4-plus',label:'GLM-4-Plus'},{id:'glm-4-air',label:'GLM-4-Air（快）'}] },
+};
+let DJ_MODEL = {};
+let DJ_EVENT = null;
+function djEmit(type,msg,extra){ if(DJ_EVENT) DJ_EVENT({type,msg,...extra}); }
+
+// ---------- 底层调用 ----------
+async function djCall(baseKey, system, userMsg, { maxTokens=3000, temperature=0.7, label='调用' }={}) {
+  const b = DJ_BASES[baseKey];
+  const key = localStorage.getItem(b.keyName);
+  if(!key) throw new Error(`缺少 ${b.name} 的 API Key`);
+  const modelId = DJ_MODEL[baseKey] || b.models[0].id;
+  const isThinking = (b.models.find(m=>m.id===modelId)||{}).thinking;
+  const budget = isThinking ? Math.max(maxTokens*4, 16000) : maxTokens;
+  djEmit('call-start', label, {model:modelId});
+  const messages = [];
+  if(system) messages.push({role:'system',content:system});
+  messages.push({role:'user',content:userMsg});
+  const r = await fetch(b.endpoint, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+    body:JSON.stringify({model:modelId,messages,max_tokens:budget,temperature})
+  });
+  if(!r.ok) throw new Error(`${b.name} 返回 ${r.status}: ${(await r.text()).slice(0,150)}`);
+  const d = await r.json();
+  const m = d.choices?.[0]?.message || {};
+  let out = m.content ?? '';
+  if(!out.trim() && m.reasoning_content) throw new Error(`${label}：思考过长导致正文为空，请重试或换非思考模型`);
+  djEmit('call-done', `${label} · ${out.length}字`, {chars:out.length});
+  return out.trim();
+}
+
+/* ============================================================
+   RAG 检索（IDF 加权 · 2-gram 切词，还原 rag_store.py）
+   ============================================================ */
+const DJ_STOP = new Set("的 了 和 与 在 是 有 也 都 就 而 你 我 他 她 它 们 这 那 之 其 于 以 及 或 把 被 让 使 给 对 从 向 到 为 不 没 无 能 会 要 想 只 又 再 还 便 即 则 却 个 些 种 时 中 上 下 里 外 内 后 前 一 二 三 很 太 更 最 呢 吗 啊 吧 呀".split(' '));
+function djTokens(text){
+  const toks = new Set();
+  if(!text) return toks;
+  // 英文/数字（S D E 123）
+  (text.match(/[A-Za-z]+\d*|\d+/g)||[]).forEach(m=>toks.add(m.toLowerCase()));
+  // 中文 2-gram
+  const segs = text.split(/[，。、；：？！""''（）《》\s,.;:?!"'()\-—…]+/);
+  for(const seg of segs){
+    for(let i=0;i<seg.length-1;i++){
+      const bg = seg.slice(i,i+2);
+      if(/[\u4e00-\u9fff]/.test(bg) && !DJ_STOP.has(bg)) toks.add(bg);
+    }
+  }
+  return toks;
+}
+class DaodejingRAG {
+  constructor(rows){
+    this.rows = rows;
+    this.index = rows.map(r=>({
+      row:r,
+      jie:djTokens(r.jiegou||''), shi:djTokens(r.shiyi||''),
+      zhi:djTokens(r.zhizhi||''), jing:djTokens(r.jingwen||''),
+    }));
+    // IDF
+    const n = this.index.length||1, df={};
+    for(const e of this.index){
+      const all = new Set([...e.jie,...e.shi,...e.zhi,...e.jing]);
+      for(const t of all) df[t]=(df[t]||0)+1;
+    }
+    this.idf = {}; for(const t in df) this.idf[t]=Math.log(1+n/df[t]);
+  }
+  _w(toks){ let s=0; for(const t of toks) s+=this.idf[t]||0; return s; }
+  _inter(a,b){ const o=new Set(); for(const t of a) if(b.has(t)) o.add(t); return o; }
+  retrieve(query, k=8){
+    const qt = djTokens(query);
+    const scored=[];
+    for(const e of this.index){
+      const s = 3.0*this._w(this._inter(qt,e.jie)) + 2.0*this._w(this._inter(qt,e.shi))
+              + 2.0*this._w(this._inter(qt,e.zhi)) + 1.0*this._w(this._inter(qt,e.jing));
+      if(s>0) scored.push({s:Math.round(s*10)/10, row:e.row});
+    }
+    scored.sort((a,b)=>b.s-a.s);
+    return scored.slice(0,k).map(x=>({...x.row, score:x.s}));
+  }
+}
+
+/* ============================================================
+   三臂方法 + 二阶碰撞（还原 arms.py 的完整 prompt）
+   ============================================================ */
+const DJ_ARM_METHOD = {
+  C1:`你手里只有一把刀：**六路径涌现**。
+S=结构显露态，D=差异序列，E=特征纠缠网络。六条发生路径分别对同一问题起手：
+S→D→E · S→E→D · D→S→E · D→E→S · E→S→D · E→D→S。
+每条路径各给一句判断，再做**一阶碰撞**——把六个判断放一起，逼出一个"单条路径到不了、唯多路径交汇才显现"的新判断。`,
+  C2:`你手里只有一把刀：**三方程求残差**。
+把问题写成三式联立：S=F(D,E)、D=G(S,E)、E=H(S,D)（三元互函、无第一因）。
+求那个"唯三式同时成立才锁得住"的**不可还原残差**——无法被任何单一维度解释、去掉哪一维都塌的那个结构交点。`,
+  C3:`你手里只有一把刀：**123原理新生**。
+123原理：①D与E相互矛盾（张力累积）→②矛盾逼S改变→③S的改变回写D、E（那一笔"回写"最关键、最常被漏）。
+以任一维为种子，按此循环迭代到收敛；并验证：**换哪一维当种子，都收敛到同一个核**。那个核=无第一因、内部自洽闭合的新内核。`,
+};
+const DJ_ARM_FORBID = {C1:'不要做三方程、不要做123原理',C2:'不要做六路径、不要做123原理',C3:'不要做六路径、不要做三方程'};
+const DJ_ARM_NAME = {C1:'六路径涌现',C2:'三方程求残差',C3:'123原理新生'};
+function djArmTask(arm){
+  return `现在只做 ${arm}·${DJ_ARM_NAME[arm]} 这一件事。${DJ_ARM_FORBID[arm]}、不要给方案、不要引道德经。可用 SDE 术语。
+把这把刀在本题上用透，写出推演过程；最后**另起一行**给出：
+核心判断：<把这条臂得出的那个关键结构判断，用一句话写死，20-40字>`;
+}
+const DJ_COLLISION_TASK = `下面【三份产出】是三条臂各自独立跑出来的——它们互相没看过对方。
+现在只做 **★二阶碰撞**，用你的发生学功底看穿三股张力往哪个 S 的跃迁上逼。
+
+【铁律·三种假碰撞一律禁止】
+- 叠加：把三条各说一句、挑共同点复述 —— 禁止。
+- 裁决：判哪条臂赢、更接近真相 —— 禁止。
+- 互补补盲：用C2补C1盲区、两两拼接、"三者都对所以一起做" —— 禁止。
+
+【正确做法·逼一次相变】
+(a) 升温：把三份产出当三股带刺的差异源，让它们互相攻击、互相不服——明写 C1 会怎么反驳 C2、C2 怎么撕 C3、C3 怎么顶回 C1，把张力烧到"似乱"。
+(b) 临界收束：在张力最高处只问一句——"若这三股都成立、又互相顶死，被它们共同逼出来、却不属于其中任何一条的，是什么？"必须蹦出一个三份产出单看都没有的新结构。
+(c) 相变自检：那句若能被线性还原成"A+B""A补B"——就是组装冒充涌现，打回重烧。
+(d) ★奶奶测试（反伪深刻）：把涌现出的那句用**大白话**讲给一个没文化的老人听——他要能听懂、且觉得"有道理、我能照着做"。**严禁把日常问题翻译成一套行话/黑话冒充深刻**。造了新词却过不了奶奶测试的，一律判伪涌现，打回重烧。
+若三股实在趋同、烧不出相变，老实说"三臂趋同、未涌现"，绝不硬凑组装。
+
+【输出】
+先写二阶碰撞的过程（升温 → 临界 → 相变涌现出的那一句）。然后：
+最终重解（一句朴素大白话，过奶奶测试）：<这里写那句>
+最后**另起一行**：
+检索线索：<把最终重解，用带 S/D/E、中心、回写、极则反、守本、自组织等结构词的一句话写出，12-30字>`;
+
+const DJ_STAGE2_TASK = `现在做【解决方案】。下方是系统从《道德经》检索到的原文、逐句释义与发生学解构，据此生成方案。
+严守改姓铁律——给用户看的文字里绝对不许出现任何 SDE 术语（S/D/E、结构显露态、差异序列、特征纠缠、发生学、发生律、回写、成熟态、二阶碰撞、六路径、三方程 等一律禁止）。但【务必】把释义与解构里的"深度洞察"用大白话讲给读者听——不是丢术语，是把那层意思翻译成人话。别让经文变成一句没解释的口号。
+
+按三段输出：
+一、问题症结（用大白话把重解凝成2-3句，不带术语）
+二、经文与解读（选1-3条。每条：①照录原文；②"这句在讲什么"——用大白话把释义+解构里的深意讲透；③"它为何接得住你这道题"——把经文的道理对上读者的具体处境）
+三、解决方案（在解读基础上给可操作的方向与动作，每条动作回扣到对应经文）
+只用检索到的这几章，不要凭记忆另引其他章句。`;
+
+const DJ_CONTROL_SYSTEM = `你是一位《道德经》智慧顾问。请用通常的、传统的方式解读《道德经》，为用户的难题给出解决方案。
+就按你平常理解的老子思想（无为、柔弱、不争、顺其自然、知足等）来谈，引用一两句相关经文并落到用户的处境上。
+按【问题症结 / 相关经文 / 解决方案】三段给出，说人话、可操作。`;
+
+// 改姓兜底清洗
+const DJ_BANNED = ["结构显露态","差异序列","特征纠缠","纠缠网络","发生学","发生律","成熟态","二阶碰撞","一阶碰撞","六路径","三方程","三大方程","123原理","回写","残差","任务DNA","SDE"];
+function djScrub(text){
+  const hits = DJ_BANNED.filter(t=>text.includes(t));
+  let out = text;
+  for(const t of DJ_BANNED) out = out.split(t).join('');
+  out = out.replace(/[（(]\s*[SDE]\s*[,，、]\s*[SDE][^)）]*[)）]/g,'');
+  out = out.replace(/[，、]{2,}/g,'，');
+  return {text:out, hits};
+}
+
+// 抽涌现脊柱
+function djExtractSpine(collision){
+  let m = collision.match(/最终重解[^:：\n]*[:：]\s*([^\n]+)/);
+  if(m && m[1].trim().length>=10) return m[1].trim().replace(/[*# ]/g,'');
+  m = collision.match(/最终重解[^\n]*[:：]?\s*\n+\s*([^\n#]+)/);
+  if(m && m[1].trim().length>=10) return m[1].trim().replace(/[*# ]/g,'');
+  return '';
+}
+function djExtractQuery(collision){
+  const m = collision.match(/检索线索[:：]\s*(.+)/);
+  if(!m) return '';
+  const q = m[1].trim().replace(/[*#`_ 　]/g,'');
+  if(q.replace(/[^\u4e00-\u9fffA-Za-z0-9]/g,'').length<4) return '';
+  return q;
+}
+// 涌现自检（还原 _emergence_ok）
+function djEmergenceOk(t){
+  if(!t) return false;
+  const clean = t.replace(/(不|非|别|莫|绝不|不是|不做|不许|不搞|禁止|严禁)[^，。；\n]{0,8}?(裁决|互补|组装|叠加|拼接|各有道理)/g,'');
+  const heat = /互相攻击|互相不服|反驳|撕|顶回|顶死|似乱|介生态|相变|涌现|不属于|单臂|不可达|烧出|现造/.test(t);
+  const assembly = /各有道理|裁决|(哪条|谁|C\d)(更接近真相|更对|更准|胜出|赢)|互补|一边.{0,12}一边|两者咬合|补(上|了).{0,6}盲区/.test(clean);
+  return heat && !assembly;
+}
+
+/* ============================================================
+   总编排
+   ============================================================ */
+async function djSolve(baseKey, sdeft, problem, rag, hooks={}){
+  const { onEvent } = hooks;
+  DJ_EVENT = onEvent || null;
+  const prime = sdeft ? (sdeft + "\n\n---\n\n") : "";
+
+  // ① 三臂并行
+  djEmit('phase','三生法重解 · 三臂并行（各自提智、互不相见）…');
+  const armText = {};
+  await Promise.all(['C1','C2','C3'].map(async arm=>{
+    const sys = prime + DJ_ARM_METHOD[arm] + "\n\n" + djArmTask(arm);
+    try { armText[arm] = await djCall(baseKey, sys, "问题："+problem, {temperature:0.7, label:`${arm}·${DJ_ARM_NAME[arm]}`}); }
+    catch(e){ armText[arm] = `（${arm} 调用失败：${e.message}）`; }
+  }));
+
+  // ② 二阶碰撞
+  djEmit('phase','二阶碰撞 · 把三份产出投进场烧相变…');
+  const products = ['C1','C2','C3'].map(a=>`【${a}·${DJ_ARM_NAME[a]} 的产出】\n${armText[a]||'（无）'}`).join('\n\n');
+  const collision = await djCall(baseKey, prime + DJ_COLLISION_TASK, "问题："+problem+"\n\n三份产出：\n"+products, {temperature:0.75, label:'二阶碰撞'});
+
+  const reinterpretation = ['C1','C2','C3'].map(a=>`## ${a}·${DJ_ARM_NAME[a]}\n${armText[a]}`).join('\n\n') + "\n\n## ★ 二阶碰撞\n"+collision;
+
+  // 自检
+  const arms = {
+    C1: !armText.C1.startsWith('（C1 调用失败'),
+    C2: !armText.C2.startsWith('（C2 调用失败'),
+    C3: !armText.C3.startsWith('（C3 调用失败'),
+    '二阶碰撞': !!collision,
+    '涌现(非组装)': djEmergenceOk(collision),
+  };
+
+  // ③ 抽脊柱 + 检索线索
+  const spine = djExtractSpine(collision);
+  let query = djExtractQuery(collision);
+  let truncated = false;
+  if(!query || query.replace(/[ *#—-]/g,'').length<4){ truncated=true; query = spine || collision; }
+
+  // ④ RAG 检索
+  djEmit('phase','道德经检索 · 81章IDF加权…');
+  let pool = rag.retrieve(query, 8).filter(p=>p.score>=8.0);
+  let passages = [], noScripture = false;
+  if(pool.length){
+    passages = pool.slice(0,3);
+    djEmit('call-done', `检索命中 ${passages.map(p=>'第'+p.ch+'章').join('、')}`, {});
+  } else {
+    noScripture = true;
+    djEmit('call-done', '检索无对位经文（诚实标注，不硬凑）', {});
+  }
+
+  // ⑤ 方案生成（改姓）
+  djEmit('phase','以原文为据生成方案（改姓·零术语）…');
+  let citeBlock;
+  if(noScripture){
+    citeBlock = "（检索校验：道德经八十一章中未找到与本题真正对位的经文。不要硬凑经文附会。请诚实说明，改为给一份『无经文支撑的直解』——只依据核心重解展开可操作方向。）";
+  } else {
+    citeBlock = passages.map(p=>`《道德经》第${p.ch}章 · ${p.title}\n【原文】${p.jingwen}\n【逐句释义】${p.shiyi}\n【发生学解构】${p.jiegou}`).join('\n\n');
+  }
+  let spineBlock = '';
+  if(spine){
+    spineBlock = `\n\n【方案脊柱·最高优先级】\n本方案必须以这句核心重解为脊梁展开：『${spine}』\n- 问题症结、每条经文解读、每个动作，都要服务于这句、回扣这句。\n- 严禁退化成'多留点时间给自己''劳逸结合'这类谁都会说的通用建议。\n- 若发现方案换成任何普通顾问也能写，就是把脊柱磨平了，重写。`;
+  }
+  const stage2System = prime + DJ_STAGE2_TASK + spineBlock + "\n\n【检索结果】\n" + citeBlock;
+  const rawSolution = await djCall(baseKey, stage2System,
+    "问题："+problem+"\n\n（内部重解，仅供参考，勿在回答中出现术语）：\n"+reinterpretation,
+    {temperature:0.6, maxTokens:3500, label:'方案生成'});
+  const {text:solution, hits:scrubbed} = djScrub(rawSolution);
+
+  // ⑥ 对照组
+  djEmit('phase','对照组 · 常规道德经解读（不提智）…');
+  const control = await djCall(baseKey, DJ_CONTROL_SYSTEM, "问题："+problem, {temperature:0.6, maxTokens:3000, label:'对照组'});
+
+  djEmit('phase','完成');
+  return { problem, reinterpretation, spine, query, truncated, passages, noScripture,
+           solution, scrubbed, arms, control, collision };
+}
+
+
+const $=id=>document.getElementById(id);
+const baseSel=$('baseSel'), keyInput=$('keyInput');
+let SDEFT='', RAG=null, lastResult=null;
+
+async function loadData(){
+  if(!SDEFT){ try{ SDEFT=await (await fetch('sde-ft.md')).text(); }catch(e){ SDEFT=''; } }
+  if(!RAG){ try{ const rows=await (await fetch('daodejing-rag.json')).json(); RAG=new DaodejingRAG(rows); }catch(e){ RAG=null; } }
+}
+function syncModels(){
+  const b=DJ_BASES[baseSel.value], saved=localStorage.getItem('sde_model_'+baseSel.value)||b.models[0].id;
+  $('modelSel').innerHTML=b.models.map(m=>`<option value="${m.id}"${m.id===saved?' selected':''}>${m.label}</option>`).join('');
+  DJ_MODEL[baseSel.value]=saved;
+}
+$('modelSel').onchange=function(){ DJ_MODEL[baseSel.value]=this.value; localStorage.setItem('sde_model_'+baseSel.value,this.value); };
+function syncKey(){ const b=DJ_BASES[baseSel.value]; keyInput.value=localStorage.getItem(b.keyName)||''; syncModels(); }
+baseSel.onchange=syncKey; syncKey();
+keyInput.onchange=()=>{ const b=DJ_BASES[baseSel.value]; if(keyInput.value) localStorage.setItem(b.keyName,keyInput.value.trim()); };
+
+const FLOW=[['arms','三臂并行'],['collision','二阶碰撞'],['rag','道德经检索'],['sol','方案生成'],['ctrl','对照组']];
+function renderFlow(st){ $('flow').innerHTML=FLOW.map(([k,l])=>`<span class="node ${st[k]||''}"><span class="d"></span>${l}</span>`).join(''); }
+function logLine(msg,cls=''){ const el=document.createElement('div'); el.className='log-line '+cls;
+  el.innerHTML=`<span class="tk">${new Date().toLocaleTimeString('zh-CN',{hour12:false})}</span>　${msg}`;
+  $('log').appendChild(el); $('log').scrollTop=$('log').scrollHeight; }
+function phaseToNode(msg){ if(msg.includes('三臂'))return'arms'; if(msg.includes('碰撞'))return'collision'; if(msg.includes('检索'))return'rag'; if(msg.includes('方案'))return'sol'; if(msg.includes('对照'))return'ctrl'; return null; }
+
+$('goBtn').onclick=async()=>{
+  const base=baseSel.value, key=keyInput.value.trim(), q=$('qInput').value.trim();
+  $('errBox').style.display='none';
+  if(!key){ showErr('请先填入 '+DJ_BASES[base].name+' 的 API Key'); return; }
+  if(!q){ showErr('请输入一道难题'); return; }
+  localStorage.setItem(DJ_BASES[base].keyName,key);
+  $('goBtn').disabled=true; $('results').style.display='none'; $('console').style.display='block'; $('log').innerHTML='';
+  $('modelText').innerHTML='基底 <b>'+DJ_BASES[base].name+'</b> · '+(DJ_MODEL[base]||DJ_BASES[base].models[0].id);
+  const st={}; renderFlow(st);
+  try{
+    await loadData();
+    if(!SDEFT){ showErr('内功文件 sde-ft.md 未加载'); $('goBtn').disabled=false; return; }
+    if(!RAG){ showErr('道德经数据 daodejing-rag.json 未加载'); $('goBtn').disabled=false; return; }
+    const r=await djSolve(base, SDEFT, q, RAG, { onEvent:(ev)=>{
+      if(ev.type==='phase'){ const n=phaseToNode(ev.msg); if(n){ for(const k in st) if(st[k]==='run')st[k]='ok'; st[n]='run'; renderFlow(st);} $('nowText').textContent=ev.msg; logLine('● '+ev.msg,'hi'); }
+      else if(ev.type==='call-start'){ $('nowText').textContent=ev.msg; logLine('▶ '+ev.msg+(ev.model?` <span class="tk">[${ev.model}]</span>`:'')); }
+      else if(ev.type==='call-done'){ logLine('✓ '+ev.msg,'hi'); }
+    }});
+    for(const k in st) st[k]='ok'; renderFlow(st);
+    $('nowText').textContent='完成'; $('pulse').style.animation='none';
+    lastResult=r; render(r);
+  }catch(e){ showErr('出错：'+e.message); logLine('✗ '+e.message,'warn'); }
+  $('goBtn').disabled=false;
+};
+function showErr(m){ $('errBox').textContent=m; $('errBox').style.display='block'; }
+
+function render(r){
+  $('results').style.display='flex';
+  $('rSol').textContent=r.solution||'(空)';
+  if(r.spine){ $('spineBox').style.display='block'; $('spineTxt').textContent=r.spine; }
+  // 经文
+  if(r.noScripture){ $('scrTag').textContent='无对位经文（诚实标注）'; $('rScr').innerHTML='<p style="color:var(--muted)">道德经八十一章中未找到与本题发生结构真正对位的经文——已诚实标注，方案改为无经文直解，不硬凑附会。</p>'; }
+  else { $('scrTag').textContent=r.passages.length+' 章命中';
+    $('rScr').innerHTML=r.passages.map(p=>`<div class="scr"><div class="ch">《道德经》第${p.ch}章 · ${p.title}</div><div class="jing">${p.jingwen}</div><div class="shi">${p.shiyi}</div></div>`).join(''); }
+  $('rReinterp').textContent=r.reinterpretation;
+  $('rArms').innerHTML=Object.entries(r.arms).map(([k,v])=>`<div class="ac"><span class="dot ${v?'ok':'no'}"></span>${k}</div>`).join('');
+  $('rCtrl').textContent=r.control||'(空)';
+}
+// 折叠
+$('reinterpToggle').onclick=()=>$('rReinterp').classList.toggle('open');
+$('ctrlToggle').onclick=()=>$('rCtrl').classList.toggle('open');
+
+// 保存 / Word
+function download(name,text){ const b=new Blob([text],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
+$('saveSol').onclick=()=>{ if(!lastResult)return; download(`道德经求解-${Date.now()}.md`, `# ${lastResult.problem}\n\n${lastResult.solution}`); };
+$('docxSol').onclick=async()=>{
+  if(!lastResult||!window.docx) return;
+  const {Document,Paragraph,TextRun,HeadingLevel,AlignmentType,Packer}=window.docx;
+  const children=[new Paragraph({text:lastResult.problem,heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,spacing:{after:240}})];
+  for(const line of lastResult.solution.split('\n')){
+    if(!line.trim()){ children.push(new Paragraph({text:''})); continue; }
+    if(/^[一二三四五]、/.test(line)) children.push(new Paragraph({text:line,heading:HeadingLevel.HEADING_1,spacing:{before:200,after:100}}));
+    else children.push(new Paragraph({children:[new TextRun(line)],spacing:{after:120},alignment:AlignmentType.JUSTIFIED}));
+  }
+  if(!lastResult.noScripture){
+    children.push(new Paragraph({text:'附：命中经文',heading:HeadingLevel.HEADING_1,spacing:{before:240,after:100}}));
+    for(const p of lastResult.passages){
+      children.push(new Paragraph({children:[new TextRun({text:`《道德经》第${p.ch}章 · ${p.title}`,bold:true})],spacing:{after:60}}));
+      children.push(new Paragraph({children:[new TextRun({text:p.jingwen,italics:true})],spacing:{after:120}}));
+    }
+  }
+  const doc=new Document({styles:{default:{document:{run:{font:'宋体',size:24}}}},sections:[{properties:{page:{margin:{top:1440,bottom:1440,left:1440,right:1440}}},children}]});
+  const blob=await Packer.toBlob(doc); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`道德经求解-${Date.now()}.docx`; a.click();
+};
+</script>
+</body>
+</html>
