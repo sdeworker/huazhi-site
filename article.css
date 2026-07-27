@@ -154,6 +154,7 @@ header.nav{
 .crumb{font-family:var(--font-mono);font-size:12px;color:var(--muted-2);letter-spacing:.08em;margin-bottom:26px;display:inline-flex;align-items:center;gap:8px;transition:color .25s}
 .crumb:hover{color:var(--S)}
 .art-title{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:1.18;letter-spacing:-.015em}
+.art-sub{margin-top:14px;font-family:var(--font-read);font-size:clamp(15px,2.2vw,18px);line-height:1.6;color:var(--muted);font-weight:400}
 .art-meta{margin-top:22px;padding-bottom:30px;border-bottom:1px solid var(--line-soft);display:flex;gap:16px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;color:var(--muted-2);letter-spacing:.05em}
 .art-meta .au{color:var(--muted)}
 
@@ -172,6 +173,12 @@ header.nav{
 .art-body li{color:var(--read);font-size:17px;line-height:1.95;margin-bottom:12px;padding-left:24px;position:relative}
 .art-body li::before{content:"";position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:2px;background:var(--E);opacity:.7}
 .art-body em{color:var(--S);font-style:normal}
+/* 参考文献 */
+.art-body ul.reflist{margin-top:8px}
+.art-body ul.reflist li{font-size:14.5px;line-height:1.75;color:var(--muted-2);margin-bottom:9px}
+.art-body ul.reflist li::before{top:11px;width:5px;height:5px;background:var(--muted-2);opacity:.5}
+.art-body a{color:var(--S);text-decoration:none;border-bottom:1px solid rgba(45,225,194,.35)}
+.art-body a:hover{border-bottom-color:var(--S)}
 
 /* 导读框 */
 .lead-box{
