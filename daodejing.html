@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>道德经问题求解引擎 · SDE | 华智科技</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/docx@8.5.0/build/index.umd.js';document.head.appendChild(s);"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -325,13 +325,17 @@ const DJ_CONTROL_SYSTEM = `你是一位《道德经》智慧顾问。请用通�
 按【问题症结 / 相关经文 / 解决方案】三段给出，说人话、可操作。`;
 
 // 改姓兜底清洗
-const DJ_BANNED = ["结构显露态","差异序列","特征纠缠","纠缠网络","发生学","发生律","成熟态","二阶碰撞","一阶碰撞","六路径","三方程","三大方程","123原理","回写","残差","任务DNA","SDE"];
+const DJ_MAP = [["结构显露态","已成形的样子"],["差异序列","路径序列"],["特征纠缠","底层牵连"],["纠缠网络","关系网络"],["三大方程","第一路"],["三方程","第一路"],["六路径","第二路"],["123原理","第三路"],["二阶碰撞","交叉校正"],["一阶碰撞","初判"],["发生学","发生"],["发生律","发生的规律"],["成熟态","成熟的样子"],["任务DNA","任务内核"],["回写","反向重置"],["残差","落差"]];
+const DJ_BANNED = ["SDE"];
 function djScrub(text){
-  const hits = DJ_BANNED.filter(t=>text.includes(t));
+  const hits = DJ_MAP.map(p=>p[0]).concat(DJ_BANNED).filter(t=>text.includes(t));
   let out = text;
+  for(const p of DJ_MAP) out = out.split(p[0]).join(p[1]);
   for(const t of DJ_BANNED) out = out.split(t).join('');
   out = out.replace(/[（(]\s*[SDE]\s*[,，、]\s*[SDE][^)）]*[)）]/g,'');
   out = out.replace(/[，、]{2,}/g,'，');
+  out=out.replace(/(第[一二三]路)([」』】”"])路/g,'$1$2');
+  out=out.replace(/[「『【]\s*[」』】]/g,'').replace(/[“"]\s*[”"]/g,'').replace(/[（(]\s*[)）]/g,'');
   return {text:out, hits};
 }
 
@@ -509,7 +513,8 @@ $('ctrlToggle').onclick=()=>$('rCtrl').classList.toggle('open');
 function download(name,text){ const b=new Blob([text],{type:'text/markdown;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); }
 $('saveSol').onclick=()=>{ if(!lastResult)return; download(`道德经求解-${Date.now()}.md`, `# ${lastResult.problem}\n\n${lastResult.solution}`); };
 $('docxSol').onclick=async()=>{
-  if(!lastResult||!window.docx) return;
+  if(!lastResult){ alert('还没有可导出的结果'); return; }
+  if(!window.docx){ alert('Word 组件未加载：请检查网络后刷新页面重试'); return; }
   const {Document,Paragraph,TextRun,HeadingLevel,AlignmentType,Packer}=window.docx;
   const children=[new Paragraph({text:lastResult.problem,heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,spacing:{after:240}})];
   for(const line of lastResult.solution.split('\n')){

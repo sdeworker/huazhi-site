@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>易经 · SDE 经典解读引擎 | 华智科技</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/docx@8.5.0/build/index.umd.js';document.head.appendChild(s);"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -324,11 +324,30 @@ async function yjScore(baseKey, label, text){
   }catch(e){ return null; }
 }
 
+const YJ_GUA64=["乾","坤","屯","蒙","需","讼","师","比","小畜","履","泰","否","同人","大有","谦","豫","随","蛊","临","观","噷嗑","贲","剥","复","无妄","大畜","颐","大过","坎","离","咸","恒","遁","大壮","晋","明夷","家人","睽","蹇","解","损","益","夬","姤","萃","升","困","井","革","鼎","震","艮","渐","归妹","丰","旅","巽","兑","涣","节","中孚","小过","既济","未济"];
+function yjResolveGua(scripture, text){
+  const s=(scripture||"").trim(); if(s) return s;
+  const hay=text||"";
+  let best=null;
+  for(const g of YJ_GUA64){
+    const a=hay.indexOf(g+"卦"), b=hay.indexOf("《"+g+"》");
+    const pos=(a<0)?b:((b<0)?a:Math.min(a,b));
+    if(pos<0) continue;
+    if(!best||pos<best.pos||(pos===best.pos&&g.length>best.g.length)) best={g:g,pos:pos};
+  }
+  return best?best.g+"卦":"";
+}
+
 // 改姓兜底
-const YJ_BANNED=["结构显露态","差异序列","特征纠缠","纠缠网络","发生学","发生律","成熟态","二阶碰撞","一阶碰撞","六路径","三方程","三大方程","123原理","回写","残差","任务DNA","SDE"];
+const YJ_MAP=[["结构显露态","已成形的样子"],["差异序列","路径序列"],["特征纠缠","底层牵连"],["纠缠网络","关系网络"],["三大方程","第一路"],["三方程","第一路"],["六路径","第二路"],["123原理","第三路"],["二阶碰撞","交叉校正"],["一阶碰撞","初判"],["发生学","发生"],["发生律","发生的规律"],["成熟态","成熟的样子"],["任务DNA","任务内核"],["回写","反向重置"],["残差","落差"]];
+const YJ_BANNED=["SDE"];
 function yjScrub(text){
-  let out=text; for(const t of YJ_BANNED) out=out.split(t).join('');
+  let out=text;
+  for(const p of YJ_MAP) out=out.split(p[0]).join(p[1]);
+  for(const t of YJ_BANNED) out=out.split(t).join('');
   out=out.replace(/[（(]\s*[SDE]\s*[,，、]\s*[SDE][^)）]*[)）]/g,'').replace(/[，、]{2,}/g,'，');
+  out=out.replace(/(第[一二三]路)([」』】”"])路/g,'$1$2');
+  out=out.replace(/[「『【]\s*[」』】]/g,'').replace(/[“"]\s*[”"]/g,'').replace(/[（(]\s*[)）]/g,'');
   return out;
 }
 
@@ -356,10 +375,13 @@ async function yjInterpret(baseKey, sdeft, mode, scripture, situation, rag, hook
 
   // ③ 变爻微读（仅解经型且识别到卦时做；处境型也可做对应卦）
   let yao='';
-  if(scripture.trim().length>=1){
+  const guaForYao=yjResolveGua(scripture, integration+'\n'+Object.keys(pathOut).map(k=>pathOut[k]).join('\n'));
+  if(guaForYao){
     yjEmit('phase','变爻微读 · 六爻逐阶铺开…');
-    try{ const rawYao=await yjCall(baseKey, prime+"你是一位深谙《易经》的解读者，把整合律铺到六爻每一步上。", yjYaoPrompt(scripture,integration,mode,situation), {temperature:0.6,maxTokens:4000,label:'变爻微读'}); yao=yjScrub(rawYao); }
-    catch(e){ yao=''; }
+    try{ const rawYao=await yjCall(baseKey, prime+"你是一位深谙《易经》的解读者，把整合律铺到六爻每一步上。", yjYaoPrompt(guaForYao,integration,mode,situation), {temperature:0.6,maxTokens:4000,label:'变爻微读'}); yao=yjScrub(rawYao); }
+    catch(e){ yao='（六爻微读这一步没能完成：'+((e&&e.message)||e)+'。可重跑一次。）'; }
+  } else {
+    yao='（没能从解读里识别出卦名，六爻微读已跳过。可在「参考卦」里指定一卦后重跑。）';
   }
 
   // ④ 对照组
@@ -450,7 +472,8 @@ function download(name,text){ const b=new Blob([text],{type:'text/markdown;chars
 $('saveMain').onclick=()=>{ if(!lastResult)return; const obj=lastResult.mode==='解经型'?lastResult.scripture:lastResult.situation;
   download(`易经解读-${Date.now()}.md`, `# ${obj}\n\n## 整合解读\n${lastResult.integration}\n\n## 六爻微读\n${lastResult.yao||''}`); };
 $('docxMain').onclick=async()=>{
-  if(!lastResult||!window.docx)return;
+  if(!lastResult){ alert('还没有可导出的结果'); return; }
+  if(!window.docx){ alert('Word 组件未加载：请检查网络后刷新页面重试'); return; }
   const {Document,Paragraph,TextRun,HeadingLevel,AlignmentType,Packer}=window.docx;
   const obj=lastResult.mode==='解经型'?lastResult.scripture:lastResult.situation;
   const children=[new Paragraph({text:obj.slice(0,40),heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,spacing:{after:240}})];
