@@ -189,6 +189,7 @@ header.nav{
   border:1px solid var(--line);border-radius:999px;font-family:var(--font-mono);font-size:12px;
   letter-spacing:.1em;color:var(--muted);transition:border-color .25s,color .25s,transform .25s}
 .art-dl:hover{border-color:rgba(45,225,194,.5);color:var(--S);transform:translateY(-1px)}
+.art-dl em{font-style:normal;font-size:10.5px;letter-spacing:.16em;opacity:.55;padding-left:9px;margin-left:3px;border-left:1px solid var(--line-soft)}
 .art-orn{max-width:var(--readw);margin:38px auto 0;padding:0 28px;display:flex;align-items:center;gap:14px;justify-content:center}
 .art-orn i{display:block;height:1px;width:96px;background:linear-gradient(90deg,transparent,var(--line))}
 .art-orn i:last-child{background:linear-gradient(90deg,var(--line),transparent)}
