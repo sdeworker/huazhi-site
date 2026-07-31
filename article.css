@@ -221,6 +221,7 @@ header.nav{
 }
 
 
+.lc-enter-top{margin-top:56px!important;margin-bottom:16px}
 .lc-enter{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;
   margin-top:52px;padding:34px 38px;border:1px solid var(--line);border-radius:20px;position:relative;overflow:hidden;
   background:linear-gradient(110deg,rgba(109,94,246,.16),rgba(255,92,138,.10) 55%,rgba(45,225,194,.07));
